@@ -1,0 +1,375 @@
+{% extends "base.html" %}
+
+{% block title %}Грильница • Служба заботы Барнаул{% endblock %}
+
+{% block extra_css %}
+    .care-section {
+      width: 100%;
+      max-width: 750px;
+      margin: 0 auto;
+      padding: 0 clamp(16px, calc((100vw - 320px) * 0.054 + 16px), 64px) 48px;
+    }
+
+    .care-title {
+      font-family: 'Gilroy', sans-serif !important;
+      text-align: center !important;
+      font-size: clamp(24px, 4vw, 28px) !important;
+      color: rgb(71, 77, 88) !important;
+      font-weight: 700 !important;
+      line-height: 32px;
+      letter-spacing: -0.3px;
+      margin-bottom: 24px;
+    }
+
+    .care-intro {
+      text-align: center;
+      color: #4b5563;
+      font-size: 16px;
+      line-height: 1.7;
+      margin-bottom: 32px;
+      letter-spacing: 0.1px;
+    }
+
+    .contact-methods {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .method-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 40px;
+      padding: 14px 32px;
+      font-weight: 600;
+      font-size: 16px;
+      color: #374151;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      background: #f9fafb;
+      min-width: 200px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .method-btn:hover {
+      background: #fff;
+      border-color: #f15a24;
+      color: #f15a24;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+      transform: translateY(-2px);
+    }
+
+    .method-btn svg {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .care-subtext {
+      text-align: center;
+      color: #697384;
+      font-size: 15px;
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+
+    .care-subtext strong {
+      color: #1f2937;
+      font-weight: 700;
+    }
+
+    .care-form {
+      background: #fff;
+      border-radius: 28px;
+      padding: 28px 24px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.05);
+      border: 1px solid #f3f4f6;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-label {
+      font-weight: 600;
+      font-size: 14px;
+      color: #374151;
+      letter-spacing: 0.2px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      background: #f3f4f6;
+      border: 1px solid transparent;
+      border-radius: 40px;
+      padding: 14px 20px;
+      font-size: 14px;
+      color: #1f2937;
+      outline: none;
+      transition: all 0.2s;
+      font-family: 'Gilroy', sans-serif;
+      width: 100%;
+    }
+
+    .form-textarea {
+      border-radius: 24px;
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      background: #fff;
+      border-color: #f15a24;
+      box-shadow: 0 0 0 3px rgba(241,90,36,0.15);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .file-upload-area {
+      background: #f9fafb;
+      border: 2px dashed #d1d5db;
+      border-radius: 20px;
+      padding: 28px 20px;
+      text-align: center;
+      color: #6b7280;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .file-upload-area:hover {
+      border-color: #f15a24;
+      background: #fff;
+    }
+
+    .file-formats {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 8px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 13px;
+      color: #4b5563;
+      line-height: 1.5;
+    }
+
+    .checkbox-group input {
+      margin-top: 3px;
+      width: 18px;
+      height: 18px;
+      accent-color: #f15a24;
+      flex-shrink: 0;
+    }
+
+    .submit-btn {
+      background: #f15a24;
+      border: none;
+      border-radius: 40px;
+      padding: 16px;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-align: center;
+      width: 100%;
+      letter-spacing: 0.3px;
+    }
+
+    .submit-btn:hover {
+      background: #d94d1a;
+    }
+
+    .phone-note {
+      text-align: center;
+      font-size: 16px;
+      color: #1f2937;
+      margin: 36px 0 24px;
+      font-weight: 500;
+      line-height: 1.6;
+    }
+
+    .phone-note a {
+      color: #f15a24;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .closing-text {
+      text-align: center;
+      color: #697384;
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 640px) {
+      .care-section {
+        padding: 0 clamp(12px, 4vw, 32px) 40px;
+      }
+      .form-row {
+        flex-direction: column;
+        gap: 22px;
+      }
+      .contact-methods {
+        flex-direction: column;
+        align-items: center;
+      }
+      .method-btn {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+{% endblock %}
+
+{% block content %}
+    <section class="care-section">
+      <h1 class="care-title">Служба заботы</h1>
+      
+      <p class="care-intro">
+        Дорогие гости!<br>
+        Если вы хотите поделиться своими впечатлениями или предложениями, обязательно напишите нам. 
+        Мы будем рады услышать ваше мнение. Вы можете связаться с нашими специалистами Службы Заботы 
+        любым удобным для вас способом, указанным ниже.
+      </p>
+
+      <p style="text-align: center; font-weight: 700; color: #1f2937; margin-bottom: 24px; font-size: 18px;">
+        Выберите удобный для вас способ связи
+      </p>
+
+      <div class="contact-methods">
+        <button class="method-btn" id="siteBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Связаться через сайт
+        </button>
+        <button class="method-btn" id="whatsappBtn">
+          <svg viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp
+        </button>
+        <button class="method-btn" id="telegramBtn">
+          <svg viewBox="0 0 24 24" fill="#2AABEE"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.14-.26.26-.54.26l.19-2.68 4.88-4.41c.21-.19-.05-.3-.33-.11l-6.03 3.8-2.6-.81c-.57-.18-.58-.57.12-.84l10.15-3.92c.47-.17.88.11.73.84z"/></svg>
+          Телеграм
+        </button>
+      </div>
+
+      <p class="care-subtext">
+        Напишите нам, и наши специалисты Службы Заботы внимательно изучат ваше сообщение и свяжутся с вами.<br>
+        <strong>Мы на связи ежедневно с 08:00 до 02:00.</strong>
+      </p>
+
+      <div class="care-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Имя*</label>
+            <input type="text" class="form-input" placeholder="Введите ваше имя">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ресторан</label>
+            <select class="form-select">
+              <option>Выберите ресторан</option>
+              <option>Павловский тракт, 291</option>
+              <option>пр-т Социалистический, 130</option>
+              <option>ТРЦ Галактика</option>
+              <option>ул. 65 лет Победы, 15</option>
+              <option>ул. Балтийская, 116</option>
+              <option>ул. Крупской, 91</option>
+              <option>ул. Лазурная, 50</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Email*</label>
+            <input type="email" class="form-input" placeholder="Email">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Телефон*</label>
+            <input type="tel" class="form-input" placeholder="+79099090099" value="+79099090099">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Замечание или предложение*</label>
+          <textarea class="form-textarea" placeholder="Напишите в свободной форме «замечание или предложение» по работе"></textarea>
+        </div>
+
+        <div>
+          <div class="file-upload-area" id="fileUploadArea">
+            <p style="font-weight: 500;">Перетащите файлы в эту область или выберите на устройстве</p>
+            <p class="file-formats">Форматы: pdf, png, svg, jpeg, mpeg, avi; не более 10 MB</p>
+            <input type="file" id="fileInput" multiple style="display: none;" accept=".pdf,.png,.svg,.jpeg,.jpg,.mpeg,.avi">
+          </div>
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="agreeCheck">
+          <label for="agreeCheck">Соглашаюсь на обработку моих персональных данных, с политикой конфиденциальности и с условиями публичной оферты.</label>
+        </div>
+
+        <button class="submit-btn" id="submitFormBtn">Отправить</button>
+      </div>
+
+      <p class="phone-note">
+        Для более оперативного взаимодействия вы также можете позвонить по номеру: 
+        <a href="tel:88001008290">8 (800) 100-82-90</a>
+      </p>
+
+      <p class="closing-text">
+        Если ваше обращение связано с продукцией, пожалуйста, приложите фото или видео блюда — это поможет нам быстрее разобраться в ситуации и предложить наиболее подходящее решение. Мы всегда готовы найти оптимальный путь для разрешения любой ситуации и сделать всё возможное, чтобы ваше впечатление о нас было положительным. В наших группах вы можете узнать больше о нас и нашей продукции.
+      </p>
+    </section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  document.getElementById('siteBtn')?.addEventListener('click', () => {
+    document.querySelector('.care-form')?.scrollIntoView({ behavior: 'smooth' });
+  });
+  document.getElementById('whatsappBtn')?.addEventListener('click', () => {
+    window.open('https://wa.me/78001008290', '_blank');
+  });
+  document.getElementById('telegramBtn')?.addEventListener('click', () => {
+    window.open('https://t.me/GrilnicaBot', '_blank');
+  });
+
+  const fileArea = document.getElementById('fileUploadArea');
+  const fileInput = document.getElementById('fileInput');
+  fileArea?.addEventListener('click', () => fileInput.click());
+  fileInput?.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+      alert(`Выбрано файлов: ${e.target.files.length}`);
+    }
+  });
+
+  document.getElementById('submitFormBtn')?.addEventListener('click', () => {
+    const agree = document.getElementById('agreeCheck');
+    if (!agree?.checked) {
+      alert('Пожалуйста, подтвердите согласие на обработку данных.');
+      return;
+    }
+    alert('Спасибо! Ваше обращение принято. Наши специалисты свяжутся с вами.');
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,721 @@
+{% extends "base.html" %}
+
+{% block title %}Грильница • Личный кабинет Барнаул{% endblock %}
+
+{% block extra_css %}
+    .profile-section {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0px clamp(16px, calc((100vw - 320px) * 0.054 + 16px), 64px) 48px;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 40px;
+    }
+
+    .profile-title {
+      font-family: 'Gilroy', sans-serif;
+      font-size: clamp(24px, 4vw, 28px);
+      color: rgb(71, 77, 88);
+      font-weight: 700;
+      line-height: 32px;
+      letter-spacing: -0.3px;
+      margin: 0;
+    }
+
+    .logout-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #697384;
+      border: 1px solid transparent;
+      background: transparent;
+      font-family: 'Gilroy', sans-serif;
+      white-space: nowrap;
+    }
+
+    .logout-btn:hover {
+      color: #e95d52;
+      border-color: #e95d52;
+      background: rgba(233, 93, 82, 0.05);
+    }
+
+    .logout-btn svg {
+      width: 18px;
+      height: 18px;
+      transition: fill 0.3s ease;
+    }
+
+    .logout-btn:hover svg path {
+      fill: #e95d52;
+    }
+
+    /* Masonry-like columns */
+    .profile-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .profile-column {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .profile-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+      border: 1px solid #f3f4f6;
+      overflow: hidden;
+      transition: all 0.25s ease;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .card-title {
+      font-weight: 700;
+      font-size: 24px;
+      color: #1f2937;
+      letter-spacing: -0.2px;
+    }
+
+    .card-arrow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      transition: transform 0.3s ease;
+      color: #697384;
+      flex-shrink: 0;
+    }
+
+    .card-arrow svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .card-arrow.collapsed {
+      transform: rotate(-90deg);
+    }
+
+    .card-body {
+      overflow: hidden;
+      transition: max-height 0.4s ease, opacity 0.3s ease;
+      max-height: 2000px;
+      opacity: 1;
+    }
+
+    .card-body.collapsed {
+      max-height: 0;
+      opacity: 0;
+    }
+
+    .divider {
+      height: 1px;
+      background: #e5e7eb;
+    }
+
+    .card-content-inner {
+      padding: 24px;
+    }
+
+    .profile-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-row.single-col {
+      grid-template-columns: 1fr;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-field label {
+      font-weight: 600;
+      font-size: 14px;
+      color: #374151;
+      letter-spacing: 0.2px;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 44px;
+      background-color: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 9999px;
+      padding: 0 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1f2937;
+      outline: none;
+      transition: all 0.3s ease;
+      font-family: 'Gilroy', sans-serif;
+      letter-spacing: 0.2px;
+    }
+
+    .form-input:hover {
+      border-color: #d1d5db;
+    }
+
+    .form-input:focus {
+      background-color: #fff;
+      border-color: #e95d52;
+      box-shadow: 0 0 0 3px rgba(233, 93, 82, 0.15);
+    }
+
+    .form-input:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background-color: #f9fafb;
+    }
+
+    .form-input.readonly {
+      background-color: #f9fafb;
+      color: #6b7280;
+    }
+
+    .form-input::placeholder {
+      color: #9ca3af;
+      font-weight: 400;
+    }
+
+    select.form-input {
+      appearance: auto;
+      -webkit-appearance: auto;
+      cursor: pointer;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .btn-save {
+      background: rgba(233, 93, 82, 0.56);
+      border: none;
+      border-radius: 9999px;
+      padding: 10px 28px;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: 'Gilroy', sans-serif;
+      letter-spacing: 0.3px;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .btn-save.active {
+      background: #e95d52;
+      pointer-events: auto;
+      opacity: 1;
+      box-shadow: 0 4px 12px rgba(233, 93, 82, 0.25);
+    }
+
+    .btn-save.active:hover {
+      background: #d44d43;
+      box-shadow: 0 6px 16px rgba(233, 93, 82, 0.35);
+    }
+
+    .btn-cancel {
+      background: transparent;
+      border: 2px solid #e95d52;
+      border-radius: 9999px;
+      padding: 8px 28px;
+      color: #e95d52;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: 'Gilroy', sans-serif;
+      letter-spacing: 0.3px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-cancel.visible {
+      display: inline-flex;
+    }
+
+    .btn-cancel:hover {
+      background: #e95d52;
+      color: white;
+    }
+
+    /* Empty states */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding:40px 20px 48px;
+      text-align: center;
+      min-height: 140px;
+    }
+
+    .empty-image {
+      max-width: 200px;
+      width: 100%;
+      margin-bottom: 24px;
+      opacity: 0.7;
+    }
+
+    .empty-text {
+      font-size: 16px;
+      color: #9ca3af;
+      font-weight: 500;
+      margin: 0;
+      margin-top: 12px;
+    }
+
+    .card-footer {
+      padding: 16px 24px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: #e95d52;
+      border: none;
+      border-radius: 9999px;
+      padding: 12px 28px;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: 'Gilroy', sans-serif;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 12px rgba(233, 93, 82, 0.25);
+    }
+
+    .btn-primary:hover {
+      background: #d44d43;
+      box-shadow: 0 6px 16px rgba(233, 93, 82, 0.35);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid #e95d52;
+      border-radius: 9999px;
+      padding: 10px 28px;
+      color: #e95d52;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: 'Gilroy', sans-serif;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-secondary:hover {
+      background: #e95d52;
+      color: white;
+    }
+
+    @media (max-width: 860px) {
+      .profile-columns {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      
+      .card-title {
+        font-size: 20px;
+      }
+      
+      .card-content-inner {
+        padding: 16px;
+      }
+      
+      .card-header {
+        padding: 16px 20px;
+      }
+      
+      .card-footer {
+        padding: 12px 20px 16px;
+      }
+      
+      .empty-state {
+        min-height: 320px;
+        padding: 40px 16px 32px;
+      }
+      
+      .empty-image {
+        max-width: 160px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .profile-section {
+        padding: 24px clamp(12px, 4vw, 32px) 40px;
+      }
+      
+      .profile-header {
+        margin-bottom: 24px;
+      }
+      
+      .form-input {
+        height: 42px;
+        font-size: 13px;
+      }
+      
+      .empty-state {
+        min-height: 260px;
+        padding: 32px 16px 24px;
+      }
+      
+      .empty-image {
+        max-width: 130px;
+      }
+    }
+{% endblock %}
+
+{% block content %}
+    <section class="profile-section">
+      <div class="profile-header">
+        <h1 class="profile-title">Личный кабинет</h1>
+        <button class="logout-btn" id="logoutBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18.22 12.708L14.825 16.108C14.7321 16.2008 14.6218 16.2745 14.5004 16.3247C14.3791 16.3749 14.249 16.4007 14.1177 16.4007C13.9863 16.4007 13.8562 16.3747 13.7349 16.3244C13.6136 16.2741 13.5033 16.2004 13.4105 16.1075C13.3177 16.0146 13.244 15.9043 13.1938 15.7829C13.1436 15.6616 13.1178 15.5315 13.1178 15.4001C13.1179 15.1349 13.2234 14.8805 13.411 14.693L15.1 13H10.694C10.4288 13 10.1744 12.8946 9.9869 12.7071C9.79936 12.5196 9.694 12.2652 9.694 12C9.694 11.7348 9.79936 11.4804 9.9869 11.2929C10.1744 11.1054 10.4288 11 10.694 11H15.1L13.411 9.312C13.2364 9.12201 13.142 8.87187 13.1475 8.61388C13.153 8.3559 13.2581 8.11003 13.4407 7.92769C13.6233 7.74536 13.8693 7.64066 14.1273 7.6355C14.3853 7.63034 14.6353 7.72511 14.825 7.9L18.22 11.294C18.3136 11.3869 18.3875 11.4978 18.437 11.62C18.5381 11.8646 18.5381 12.1394 18.437 12.384C18.3872 12.5055 18.3134 12.6157 18.22 12.708ZM16.646 17.927C16.3808 17.927 16.1264 18.0324 15.9389 18.2199C15.7514 18.4074 15.646 18.6618 15.646 18.927C15.6457 19.0189 15.6091 19.1069 15.544 19.1717C15.479 19.2366 15.3909 19.273 15.299 19.273H8.7C8.60815 19.273 8.52004 19.2366 8.45499 19.1717C8.38994 19.1069 8.35327 19.0189 8.353 18.927V5.073C8.35327 4.98105 8.38991 4.89294 8.45493 4.82792C8.51995 4.76291 8.60805 4.72626 8.7 4.726H15.3C15.392 4.72626 15.4801 4.76291 15.5451 4.82792C15.6101 4.89294 15.6467 4.98105 15.647 5.073V5.917C15.647 6.18221 15.7524 6.43657 15.9399 6.6241C16.1274 6.81164 16.3818 6.917 16.647 6.917C16.9122 6.917 17.1666 6.81164 17.3541 6.6241C17.5416 6.43657 17.647 6.18221 17.647 5.917V5.073C17.6465 4.4507 17.399 3.85404 16.959 3.414C16.519 2.97397 15.9223 2.72653 15.3 2.726H8.7C8.07796 2.72706 7.48171 2.9747 7.04195 3.41465C6.60219 3.85459 6.3548 4.45095 6.354 5.073V18.927C6.3548 19.549 6.60222 20.1452 7.04201 20.585C7.4818 21.0248 8.07805 21.2722 8.7 21.273H15.3C15.9222 21.2727 16.5189 21.0255 16.9589 20.5856C17.399 20.1458 17.6465 19.5492 17.647 18.927C17.647 18.7956 17.6211 18.6655 17.5708 18.5441C17.5205 18.4227 17.4467 18.3124 17.3538 18.2195C17.2608 18.1267 17.1504 18.053 17.029 18.0028C16.9076 17.9526 16.7774 17.9269 16.646 17.927Z" fill="#697384"/>
+          </svg>
+          Выйти
+        </button>
+      </div>
+
+      <div class="profile-columns">
+        <!-- Левая колонка -->
+        <div class="profile-column" id="leftColumn">
+          <!-- Мои данные -->
+          <div class="profile-card" id="myDataCard">
+            <div class="card-header" id="myDataHeader">
+              <span class="card-title">Мои данные</span>
+              <span class="card-arrow" id="myDataArrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </span>
+            </div>
+            <div class="card-body" id="myDataBody">
+              <div class="divider"></div>
+              <div class="card-content-inner">
+                <form class="profile-form" id="myDataForm">
+                  <div class="form-row">
+                    <div class="form-field">
+                      <label>Имя</label>
+                      <input type="text" class="form-input" value="Никита" data-original="Никита">
+                    </div>
+                    <div class="form-field">
+                      <label>Фамилия</label>
+                      <input type="text" class="form-input" value="Синельников" data-original="Синельников">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-field">
+                      <label>Телефон</label>
+                      <input type="tel" class="form-input readonly" value="+79099090099" disabled data-original="+79099090099">
+                    </div>
+                    <div class="form-field">
+                      <label>Email</label>
+                      <input type="email" class="form-input" value="agrailka666@gmail.com" data-original="agrailka666@gmail.com">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-field">
+                      <label>Дата рождения</label>
+                      <input type="date" class="form-input" value="2005-02-16" id="birthDate" data-original="2005-02-16" data-locked="true">
+                    </div>
+                    <div class="form-field">
+                      <label>Пол</label>
+                      <select class="form-input" data-original="male">
+                        <option value="male" selected>Мужской</option>
+                        <option value="female">Женский</option>
+                      </select>
+                    </div>
+                  </div>
+                  <p style="font-size: 12px; color: #9ca3af; margin-top: 4px;">Дата рождения устанавливается один раз и изменять ее нельзя</p>
+                  <div class="form-actions">
+                    <button type="button" class="btn-cancel" id="myDataCancel">Отменить</button>
+                    <button type="submit" class="btn-save" id="myDataSave">Сохранить</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Заказы -->
+          <div class="profile-card" id="ordersCard">
+            <div class="card-header" id="ordersHeader">
+              <span class="card-title">Заказы</span>
+              <span class="card-arrow" id="ordersArrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </span>
+            </div>
+            <div class="card-body" id="ordersBody">
+              <div class="divider"></div>
+              <div class="empty-state">
+                <p class="empty-text">Список пуст</p>
+              </div>
+              <div class="divider"></div>
+              <div class="card-footer">
+                <button class="btn-primary" id="goToMenuBtn">Перейти в меню</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Правая колонка -->
+        <div class="profile-column" id="rightColumn">
+          <!-- Адреса -->
+          <div class="profile-card" id="addressesCard">
+            <div class="card-header" id="addressesHeader">
+              <span class="card-title">Адреса</span>
+              <span class="card-arrow" id="addressesArrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </span>
+            </div>
+            <div class="card-body" id="addressesBody">
+              <div class="divider"></div>
+              <div class="empty-state">
+                <img src="/src/profile/pole.png" alt="Нет адресов" class="empty-image" onerror="this.style.display='none'">
+                <p class="empty-text">Список пуст</p>
+              </div>
+              <div class="divider"></div>
+              <div class="card-footer">
+                <button class="btn-secondary" id="addAddressBtn">Добавить адрес</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Для юр. лиц -->
+          <div class="profile-card" id="legalCard">
+            <div class="card-header" id="legalHeader">
+              <span class="card-title">Для юр. лиц</span>
+              <span class="card-arrow" id="legalArrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </span>
+            </div>
+            <div class="card-body" id="legalBody">
+              <div class="divider"></div>
+              <div class="card-content-inner">
+                <form class="profile-form" id="legalForm">
+                  <div class="form-row single-col">
+                    <div class="form-field">
+                      <label>Название организации*</label>
+                      <input type="text" class="form-input" placeholder="ООО Ромашка" data-original="">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-field">
+                      <label>ИНН*</label>
+                      <input type="text" class="form-input" placeholder="0000000000" data-original="">
+                    </div>
+                    <div class="form-field">
+                      <label>Email для выставления счета*</label>
+                      <input type="email" class="form-input" placeholder="email@corp.ru" data-original="">
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <button type="button" class="btn-cancel" id="legalCancel">Отменить</button>
+                    <button type="submit" class="btn-save" id="legalSave">Сохранить</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  (function() {
+    // Функция сворачивания/разворачивания карточек
+    function setupCardToggle(headerId, bodyId, arrowId) {
+      const header = document.getElementById(headerId);
+      const body = document.getElementById(bodyId);
+      const arrow = document.getElementById(arrowId);
+      
+      if (!header || !body || !arrow) return;
+      
+      header.addEventListener('click', function() {
+        if (body.classList.contains('collapsed')) {
+          body.classList.remove('collapsed');
+          arrow.classList.remove('collapsed');
+        } else {
+          body.classList.add('collapsed');
+          arrow.classList.add('collapsed');
+        }
+      });
+    }
+
+    setupCardToggle('myDataHeader', 'myDataBody', 'myDataArrow');
+    setupCardToggle('addressesHeader', 'addressesBody', 'addressesArrow');
+    setupCardToggle('ordersHeader', 'ordersBody', 'ordersArrow');
+    setupCardToggle('legalHeader', 'legalBody', 'legalArrow');
+
+    // Функция отслеживания изменений в форме
+    function setupFormTracking(formId, saveBtnId, cancelBtnId) {
+      const form = document.getElementById(formId);
+      const saveBtn = document.getElementById(saveBtnId);
+      const cancelBtn = document.getElementById(cancelBtnId);
+      
+      if (!form || !saveBtn || !cancelBtn) return;
+
+      const inputs = form.querySelectorAll('input[data-original], select[data-original]');
+      
+      function checkChanges() {
+        let hasChanges = false;
+        inputs.forEach(input => {
+          const original = input.getAttribute('data-original');
+          const current = input.value;
+          if (original !== current) {
+            hasChanges = true;
+          }
+        });
+
+        if (hasChanges) {
+          saveBtn.classList.add('active');
+          cancelBtn.classList.add('visible');
+        } else {
+          saveBtn.classList.remove('active');
+          cancelBtn.classList.remove('visible');
+        }
+      }
+
+      inputs.forEach(input => {
+        input.addEventListener('input', checkChanges);
+        input.addEventListener('change', checkChanges);
+      });
+
+      cancelBtn.addEventListener('click', function() {
+        inputs.forEach(input => {
+          const original = input.getAttribute('data-original');
+          if (original) {
+            input.value = original;
+          } else {
+            input.value = '';
+          }
+        });
+        saveBtn.classList.remove('active');
+        cancelBtn.classList.remove('visible');
+      });
+
+      saveBtn.addEventListener('click', function(e) {
+        if (!saveBtn.classList.contains('active')) {
+          e.preventDefault();
+          return;
+        }
+        
+        // Проверка даты рождения для формы "Мои данные"
+        if (formId === 'myDataForm') {
+          const birthDateInput = document.getElementById('birthDate');
+          if (birthDateInput && birthDateInput.getAttribute('data-locked') === 'true') {
+            if (birthDateInput.value !== birthDateInput.getAttribute('data-original')) {
+              e.preventDefault();
+              alert('Дату рождения можно установить только один раз. Изменение невозможно.');
+              birthDateInput.value = birthDateInput.getAttribute('data-original');
+              checkChanges();
+              return;
+            }
+          }
+        }
+
+        // Сохраняем изменения
+        inputs.forEach(input => {
+          input.setAttribute('data-original', input.value);
+        });
+        
+        // Блокируем дату рождения после сохранения
+        if (formId === 'myDataForm') {
+          const birthDateInput = document.getElementById('birthDate');
+          if (birthDateInput && birthDateInput.getAttribute('data-locked') === 'false') {
+            birthDateInput.setAttribute('data-locked', 'true');
+            birthDateInput.setAttribute('data-original', birthDateInput.value);
+          }
+        }
+        
+        saveBtn.classList.remove('active');
+        cancelBtn.classList.remove('visible');
+        
+        alert('Изменения сохранены!');
+      });
+    }
+
+    setupFormTracking('myDataForm', 'myDataSave', 'myDataCancel');
+    setupFormTracking('legalForm', 'legalSave', 'legalCancel');
+
+    // Кнопка "Выйти"
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      if (confirm('Вы уверены, что хотите выйти?')) {
+        window.location.href = '/login';
+      }
+    });
+
+    // Кнопка "Перейти в меню"
+    document.getElementById('goToMenuBtn').addEventListener('click', function() {
+      window.location.href = '/';
+    });
+
+    // Кнопка "Добавить адрес"
+    document.getElementById('addAddressBtn').addEventListener('click', function() {
+      alert('Функция добавления адреса будет доступна в ближайшее время.');
+    });
+
+    // Инициализация блокировки даты рождения
+    const birthDateInput = document.getElementById('birthDate');
+    if (birthDateInput && birthDateInput.value) {
+      birthDateInput.setAttribute('data-locked', 'true');
+    }
+  })();
+</script>
+{% endblock %}

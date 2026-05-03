@@ -1,0 +1,528 @@
+{% extends "base.html" %}
+
+{% block title %}Грильница • Вход Барнаул{% endblock %}
+
+{% block extra_css %}
+    .login-section {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 40px clamp(16px, 4vw, 32px) 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .login-form-wrapper {
+      width: 100%;
+      max-width: 400px;
+      background: #fff;
+      border-radius: 24px;
+      padding: 32px 28px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e5e7eb;
+    }
+
+    .login-title {
+      font-family: 'Gilroy', sans-serif;
+      text-align: center;
+      font-size: clamp(24px, 4vw, 28px);
+      color: rgb(71, 77, 88);
+      font-weight: 700;
+      line-height: 32px;
+      letter-spacing: -0.3px;
+      margin-bottom: 12px;
+    }
+
+    .login-subtitle {
+      text-align: center;
+      color: #697384;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 32px;
+      max-width: 320px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-label {
+      font-weight: 600;
+      font-size: 13px;
+      color: #374151;
+      letter-spacing: 0.2px;
+    }
+
+    .phone-input-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .phone-input {
+      width: 100%;
+      height: 44px;
+      background-color: rgb(243, 246, 249);
+      border: 1px solid transparent;
+      border-bottom-color: rgb(226, 231, 240);
+      border-radius: 9999px;
+      padding: 0 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1f2937;
+      outline: none;
+      transition: all 0.3s ease;
+      font-family: 'Gilroy', sans-serif;
+      letter-spacing: 0.2px;
+    }
+
+    .phone-input::placeholder {
+      color: #9ca3af;
+      font-weight: 400;
+    }
+
+    .phone-input:hover {
+      background-color: #f3f4f6;
+    }
+
+    .phone-input:focus {
+      background-color: #fff;
+      border-color: #e95d52;
+      box-shadow: 0 0 0 3px rgba(233, 93, 82, 0.15);
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: #697384;
+      line-height: 1.5;
+      margin-top: 4px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      margin-top: 2px;
+      width: 18px;
+      height: 18px;
+      accent-color: #e95d52;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .checkbox-group label {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .login-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .primary-btn {
+      width: 100%;
+      max-height: 40px;
+      height: 40px;
+      background: rgba(233, 93, 82, 0.56);
+      border: none;
+      border-radius: 9999px;
+      padding: 0 24px;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-align: center;
+      font-family: 'Gilroy', sans-serif;
+      letter-spacing: 0.3px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .primary-btn.active {
+      background: #e95d52;
+      pointer-events: auto;
+      opacity: 1;
+      box-shadow: 0 4px 12px rgba(233, 93, 82, 0.25);
+    }
+
+    .primary-btn.active:hover {
+      background: #d44d43;
+      box-shadow: 0 6px 16px rgba(233, 93, 82, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .primary-btn.active:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 8px rgba(233, 93, 82, 0.2);
+    }
+
+    .secondary-btn {
+      width: 100%;
+      max-height: 40px;
+      height: 40px;
+      background: rgba(233, 93, 82, 0.56);
+      border: none;
+      border-radius: 9999px;
+      padding: 0 24px;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-align: center;
+      font-family: 'Gilroy', sans-serif;
+      letter-spacing: 0.3px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .secondary-btn.active {
+      background: #e95d52;
+      pointer-events: auto;
+      opacity: 1;
+      box-shadow: 0 4px 12px rgba(233, 93, 82, 0.25);
+    }
+
+    .secondary-btn.active:hover {
+      background: #d44d43;
+      box-shadow: 0 6px 16px rgba(233, 93, 82, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .secondary-btn.active:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 8px rgba(233, 93, 82, 0.2);
+    }
+
+    /* Модальное окно */
+    .legal-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0.2s, opacity 0.2s ease;
+    }
+
+    .legal-modal-overlay.open {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .legal-modal-container {
+      background: white;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 420px;
+      padding: 32px 28px 24px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .legal-modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #242e33;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .legal-modal-text {
+      font-size: 16px;
+      color: #242e33;
+      text-align: center;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .legal-modal-btn-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 8px;
+    }
+
+    .legal-modal-ok-btn {
+      background: #e95d52;
+      border: none;
+      border-radius: 9999px;
+      padding: 10px 32px;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: 'Gilroy', sans-serif;
+      letter-spacing: 0.3px;
+      min-width: 100px;
+    }
+
+    .legal-modal-ok-btn:hover {
+      background: #d44d43;
+      box-shadow: 0 4px 12px rgba(233, 93, 82, 0.3);
+    }
+
+    .legal-modal-ok-btn:active {
+      transform: scale(0.98);
+    }
+
+    @media (max-width: 640px) {
+      .login-section {
+        padding: 24px clamp(12px, 4vw, 32px) 40px;
+      }
+      
+      .login-form-wrapper {
+        padding: 24px 20px;
+        border-radius: 20px;
+      }
+      
+      .phone-input {
+        height: 42px;
+        font-size: 13px;
+      }
+      
+      .primary-btn, .secondary-btn {
+        height: 38px;
+        max-height: 38px;
+        font-size: 16px;
+      }
+      
+      .checkbox-group {
+        font-size: 12px;
+        gap: 8px;
+      }
+      
+      .legal-modal-container {
+        padding: 24px 20px 20px;
+      }
+      
+      .legal-modal-title {
+        font-size: 16px;
+      }
+      
+      .legal-modal-text {
+        font-size: 14px;
+      }
+    }
+{% endblock %}
+
+{% block content %}
+    <section class="login-section">
+      <div class="login-form-wrapper">
+        <h1 class="login-title">Вход</h1>
+        
+        <p class="login-subtitle">
+          Укажите ваш номер<br>и выберите способ входа
+        </p>
+
+        <form class="login-form" id="loginForm" onsubmit="return false;">
+          <div class="form-group">
+            <label class="form-label" for="phoneInput">Введите номер вашего телефона*</label>
+            <div class="phone-input-wrapper">
+              <input 
+                type="tel" 
+                id="phoneInput" 
+                class="phone-input" 
+                placeholder="+7 (___) ___-__-__" 
+                value="+7"
+                required
+              >
+            </div>
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="agreeCheck">
+            <label for="agreeCheck">
+              Соглашаюсь на обработку моих персональных данных, с политикой конфиденциальности и с условиями публичной оферты.
+            </label>
+          </div>
+
+          <div class="login-actions">
+            <button type="submit" class="primary-btn" id="callSelfBtn">
+              Позвоню сам
+            </button>
+            
+            <button type="button" class="secondary-btn" id="callMeBtn">
+              Позвоните мне
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Модальное окно -->
+    <div class="legal-modal-overlay" id="legalModal">
+      <div class="legal-modal-container">
+        <h3 class="legal-modal-title">Нужно согласится с юр. документами</h3>
+        <p class="legal-modal-text">
+          К сожалению, без этого не получится оформить заказ 😔
+        </p>
+        <div class="legal-modal-btn-wrapper">
+          <button class="legal-modal-ok-btn" id="closeLegalModalBtn">Ок</button>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  (function() {
+    const phoneInput = document.getElementById('phoneInput');
+    const agreeCheck = document.getElementById('agreeCheck');
+    const callSelfBtn = document.getElementById('callSelfBtn');
+    const callMeBtn = document.getElementById('callMeBtn');
+    const loginForm = document.getElementById('loginForm');
+    const legalModal = document.getElementById('legalModal');
+    const closeLegalModalBtn = document.getElementById('closeLegalModalBtn');
+
+    // Функция проверки валидности телефона
+    function isPhoneValid() {
+      const phone = phoneInput.value.replace(/[^\d+]/g, '');
+      return phone.length >= 11; // Минимум +7 и 10 цифр
+    }
+
+    // Функция обновления состояния кнопок
+    function updateButtonsState() {
+      if (isPhoneValid()) {
+        callSelfBtn.classList.add('active');
+        callMeBtn.classList.add('active');
+      } else {
+        callSelfBtn.classList.remove('active');
+        callMeBtn.classList.remove('active');
+      }
+    }
+
+    // Маска для телефона
+    phoneInput.addEventListener('input', function(e) {
+      let value = this.value.replace(/[^\d+]/g, '');
+      
+      if (!value.startsWith('+7')) {
+        value = '+7' + value.replace(/^\+7/, '');
+      }
+      
+      // Ограничиваем длину
+      if (value.length > 12) {
+        value = value.slice(0, 12);
+      }
+      
+      this.value = value;
+      updateButtonsState();
+    });
+
+    // Защита от удаления +7
+    phoneInput.addEventListener('keydown', function(e) {
+      if (this.selectionStart <= 2 && (e.key === 'Backspace' || e.key === 'Delete')) {
+        e.preventDefault();
+      }
+    });
+
+    // Открыть модальное окно
+    function openLegalModal() {
+      legalModal.classList.add('open');
+    }
+
+    // Закрыть модальное окно
+    function closeLegalModal() {
+      legalModal.classList.remove('open');
+    }
+
+    // Закрытие по кнопке Ок
+    closeLegalModalBtn.addEventListener('click', closeLegalModal);
+
+    // Закрытие по клику на фон
+    legalModal.addEventListener('click', function(e) {
+      if (e.target === legalModal) {
+        closeLegalModal();
+      }
+    });
+
+    // Закрытие по Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && legalModal.classList.contains('open')) {
+        closeLegalModal();
+      }
+    });
+
+    // Функция обработки входа
+    function handleLogin(action) {
+      if (!isPhoneValid()) {
+        // Телефон не валиден - ничего не делаем
+        return false;
+      }
+      
+      if (!agreeCheck.checked) {
+        // Согласие не отмечено - показываем модальное окно
+        openLegalModal();
+        return false;
+      }
+
+      // Все условия соблюдены - переходим в личный кабинет
+      window.location.href = '/profile';
+      return true;
+    }
+
+    // Обработчики кнопок
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      handleLogin('call');
+    });
+
+    callSelfBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (callSelfBtn.classList.contains('active')) {
+        handleLogin('call');
+      }
+    });
+
+    callMeBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (callMeBtn.classList.contains('active')) {
+        handleLogin('callback');
+      }
+    });
+
+    // Предотвращаем отправку формы по Enter
+    phoneInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (callSelfBtn.classList.contains('active')) {
+          handleLogin('call');
+        }
+      }
+    });
+
+    // Инициализация состояния кнопок
+    updateButtonsState();
+  })();
+</script>
+{% endblock %}

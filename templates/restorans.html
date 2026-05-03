@@ -1,0 +1,277 @@
+{% extends "base.html" %}
+
+{% block title %}Грильница • Рестораны Барнаул{% endblock %}
+
+{% block extra_css %}
+    .menu-section {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 clamp(16px, calc((100vw - 320px) * 0.054 + 16px), 64px);
+    }
+
+    .menu-title-wrapper {
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .menu-title-wrapper h1 {
+      font-family: 'Gilroy', sans-serif !important;
+      text-align: center !important;
+      font-size: clamp(24px, 4vw, 28px) !important;
+      color: rgb(71, 77, 88) !important;
+      font-weight: 700 !important;
+      line-height: 32px;
+      letter-spacing: -0.3px;
+    }
+
+    .restaurant-map-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto 48px;
+      padding: 0 clamp(16px, calc((100vw - 320px) * 0.054 + 16px), 64px);
+      height: 450px;
+    }
+    .restaurant-map {
+      width: 100%;
+      height: 100%;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      border: 1px solid #f3f4f6;
+    }
+
+    .restaurant-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      padding-bottom: 48px;
+    }
+
+    .restaurant-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+      border: 1px solid #f3f4f6;
+      overflow: hidden;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .restaurant-card:hover {
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+      border-color: #f15a24;
+      transform: translateY(-4px);
+    }
+
+    .restaurant-image {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      display: block;
+      background: #f9fafb;
+    }
+
+    .restaurant-info {
+      padding: 16px 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .restaurant-address {
+      font-weight: 700;
+      font-size: 16px;
+      color: #1f2937;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+
+    .restaurant-label {
+      font-weight: 600;
+      font-size: 13px;
+      color: #374151;
+      margin-top: 2px;
+    }
+
+    .restaurant-value {
+      font-size: 13px;
+      color: #697384;
+      line-height: 1.5;
+    }
+
+    .restaurant-detail-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #f15a24;
+      color: #fff;
+      border-radius: 9999px;
+      padding: 8px 20px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: none;
+      align-self: flex-end;
+      margin-top: auto;
+      white-space: nowrap;
+    }
+
+    .restaurant-detail-btn:hover {
+      background: #d94d1a;
+    }
+
+    @media (max-width: 1100px) {
+      .restaurant-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .restaurant-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .restaurant-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      
+      .restaurant-map-container {
+        height: 300px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .menu-section {
+        padding: 0 clamp(12px, 4vw, 32px);
+      }
+
+      .menu-title-wrapper {
+        margin-top: clamp(24px, 5vw, 40px);
+        margin-bottom: clamp(20px, 4vw, 32px);
+      }
+    }
+{% endblock %}
+
+{% block content %}
+    <section class="menu-section">
+      <div class="menu-title-wrapper">
+        <h1>Рестораны</h1>
+        <p style="text-align: center; color: #697384; margin-top: 8px; font-size: 16px; max-width: 700px; margin-left: auto; margin-right: auto;">
+          Обратите внимание! В ряде наших ресторанов отсутствуют некоторые позиции меню. Подробнее на странице интересующего ресторана.
+        </p>
+      </div>
+    </section>
+
+    <div class="restaurant-map-container">
+      <div class="restaurant-map" id="restaurantMap"></div>
+    </div>
+
+    <section class="menu-section">
+      <div class="restaurant-grid" id="restaurantGrid"></div>
+    </section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const restaurantsData = [
+    { address: "Змеиногорский тракт, 104п/1", lat: 53.332, lng: 83.704, schedule: "Режим работы:", time: "Ежедневно 09:00–23:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, ланчи, супы, салаты, горячие закуски, японская кухня." },
+    { address: "Павловский тракт, 291", lat: 53.373, lng: 83.708, schedule: "Режим работы:", time: "Ежедневно 10:00–23:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, ланчи, супы, салаты, горячие закуски, японская кухня." },
+    { address: "пр-т Комсомольский, 102", lat: 53.348, lng: 83.689, schedule: "Режим работы:", time: "Ежедневно 08:00–24:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, ланчи, супы, салаты, горячие закуски, японская кухня." },
+    { address: "пр-т Красноармейский, 61", lat: 53.360, lng: 83.734, schedule: "Режим работы:", time: "Ежедневно 08:00–24:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, ланчи, супы, салаты, горячие закуски, японская кухня." },
+    { address: "пр-т Ленина, 155а", lat: 53.348, lng: 83.775, schedule: "Режим работы:", time: "Круглосуточно 00:00-24:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, горячие закуски, супы, салаты, ланчи, воки." },
+    { address: "пр-т Ленина, 47", lat: 53.361, lng: 83.757, schedule: "Режим работы:", time: "Круглосуточно 00:00-24:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, ланчи, супы, салаты, горячие закуски, японская кухня." },
+    { address: "пр-т Ленина, 986", lat: 53.319, lng: 83.801, schedule: "Режим работы:", time: "Ежедневно 09:00-23:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, ланчи, супы, салаты, горячие закуски, воки." },
+    { address: "пр-т Социалистический, 130", lat: 53.347, lng: 83.698, schedule: "Режим работы:", time: "Ежедневно 09:00-23:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, ланчи, супы, салаты, горячие закуски, японская кухня." },
+    { address: "ТРЦ Галактика", lat: 53.382, lng: 83.756, schedule: "Режим работы:", time: "Ежедневно 10:00–22:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, ланчи, супы, салаты, воки, горячие закуски." },
+    { address: "ул. 65 лет Победы, 15", lat: 53.326, lng: 83.801, schedule: "Режим работы:", time: "Ежедневно 08:00–24:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, ланчи, супы, салаты, горячие закуски, японская кухня." },
+    { address: "ул. Балтийская, 116", lat: 53.394, lng: 83.672, schedule: "Режим работы:", time: "Ежедневно 08:00–24:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, ланчи, супы, салаты, горячие закуски, японская кухня." },
+    { address: "ул. Балтийская, 556", lat: 53.401, lng: 83.660, schedule: "Режим работы:", time: "Круглосуточно 00:00–24:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, ланчи, супы, салаты, воки, горячие закуски." },
+    { address: "ул. Крупской, 91", lat: 53.301, lng: 83.769, schedule: "Режим работы:", time: "Ежедневно 09:00-23:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, воски, горячие закуски, супы, ланчи." },
+    { address: "ул. Лазурная, 50", lat: 53.419, lng: 83.668, schedule: "Режим работы:", time: "Круглосуточно 00:00-24:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, ланчи, супы, салаты, горячие закуски, японская кухня." },
+    { address: "ул. Малахова, 62/2", lat: 53.326, lng: 83.745, schedule: "Режим работы:", time: "Ежедневно 09:00-23:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, ланчи, супы, воски, салаты, горячие закуски." },
+    { address: "ул. Островского, 41", lat: 53.360, lng: 83.700, schedule: "Режим работы:", time: "Круглосуточно 00:00-24:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, ланчи, супы, салаты, горячие закуски, японская кухня." },
+    { address: "ул. Тимуровская, 17", lat: 53.347, lng: 83.712, schedule: "Режим работы:", time: "Ежедневно 09:00-22:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, лапчи, супы, салаты, воки, горячие закуски." },
+    { address: "ул. Христенко, 24", lat: 53.338, lng: 83.684, schedule: "Режим работы:", time: "Ежедневно 09:00-23:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, горячие закуски, воки." },
+    { address: "ул. Чайковского, 35", lat: 53.352, lng: 83.721, schedule: "Режим работы:", time: "Ежедневно 09:00-23:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, лапчи, супы, салаты, горячие закуски, японская кухня." },
+    { address: "ул. Юрина, 202г", lat: 53.339, lng: 83.760, schedule: "Режим работы:", time: "Круглосуточно 00:00-24:00", additionally: "Дополнительно:", kitchen: "Кухня:", dishes: "Шаурма, хот-доги, крылья, пицца, супы, воки, горячие закуски, лапчи, салаты." }
+  ];
+
+  let restaurantMap;
+
+  function initRestaurantMap() {
+    const mapEl = document.getElementById('restaurantMap');
+    if (!mapEl || restaurantMap) return;
+    
+    restaurantMap = L.map('restaurantMap', { 
+      center: [53.373, 83.708], 
+      zoom: 12, 
+      attributionControl: false, 
+      zoomControl: true 
+    });
+    
+    L.tileLayer('https://tile2.maps.2gis.com/tiles?x={x}&y={y}&z={z}', {
+      attribution: '© 2ГИС', subdomains: ['01', '02', '03', '04'], maxZoom: 19
+    }).addTo(restaurantMap);
+
+    const icon = L.divIcon({
+      className: 'custom-div-icon',
+      html: '<div style="background-color: #f15a24; width: 14px; height: 14px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4);"></div>',
+      iconSize: [20, 20],
+      iconAnchor: [10, 10],
+      popupAnchor: [0, -10]
+    });
+
+    restaurantsData.forEach(r => {
+      const m = L.marker([r.lat, r.lng], { icon }).bindPopup(`<b>Грильница</b><br>${r.address}`);
+      m.addTo(restaurantMap);
+    });
+
+    setTimeout(() => restaurantMap.invalidateSize(), 200);
+  }
+
+  function renderRestaurantGrid() {
+    const gridContainer = document.getElementById('restaurantGrid');
+    if (!gridContainer) return;
+
+    gridContainer.innerHTML = restaurantsData.map((r, index) => `
+      <div class="restaurant-card">
+        <img src="src/rest/rest_${index + 1}.png" alt="${r.address}" class="restaurant-image" onerror="this.style.background='#f9fafb'; this.style.minHeight='180px'">
+        <div class="restaurant-info">
+          <div class="restaurant-address">${r.address}</div>
+          <div class="restaurant-label">${r.schedule}</div>
+          <div class="restaurant-value">${r.time}</div>
+          <div class="restaurant-label" style="margin-top: 4px;">${r.additionally}</div>
+          <div class="restaurant-label">${r.kitchen}</div>
+          <div class="restaurant-value">${r.dishes}</div>
+          <button class="restaurant-detail-btn">Подробнее</button>
+        </div>
+      </div>
+    `).join('');
+
+    document.querySelectorAll('.restaurant-detail-btn').forEach((btn, index) => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (restaurantMap) {
+          const r = restaurantsData[index];
+          restaurantMap.setView([r.lat, r.lng], 16);
+          document.querySelector('.restaurant-map-container').scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+  }
+
+  window.addEventListener('load', () => {
+    initRestaurantMap();
+    renderRestaurantGrid();
+  });
+</script>
+{% endblock %}

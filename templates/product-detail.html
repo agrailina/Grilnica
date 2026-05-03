@@ -1,0 +1,399 @@
+{% extends "base.html" %}
+
+{% block title %}Грильница • Шары залетают{% endblock %}
+
+{% block extra_css %}
+    .product-detail-section {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px clamp(16px, calc((100vw - 320px) * 0.054 + 16px), 64px) 48px;
+    }
+
+    .product-detail-container {
+      display: flex;
+      gap: clamp(24px, 5vw, 64px);
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .product-image-wrapper {
+      flex: 0 0 auto;
+      width: clamp(280px, 40vw, 450px);
+      border-radius: 28px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.05);
+      border: 1px solid #f3f4f6;
+    }
+
+    .product-detail-image {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: contain;
+      display: block;
+      background: #fff;
+    }
+
+    .product-info {
+      flex: 1;
+      max-width: 520px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .back-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      color: #697384;
+      flex-shrink: 0;
+      text-decoration: none;
+    }
+
+    .back-button:hover {
+      background: rgba(241, 90, 36, 0.08);
+      border-color: #f15a24;
+      color: #f15a24;
+    }
+
+    .back-button svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .back-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: #697384;
+      transition: color 0.25s ease;
+    }
+
+    .back-row:hover .back-label {
+      color: #f15a24;
+    }
+
+    .product-detail-name {
+      font-family: 'Gilroy', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: #1f2937;
+      line-height: 1.3;
+      letter-spacing: -0.3px;
+      margin: 0;
+    }
+
+    .product-detail-description {
+      font-size: 14px;
+      color: #697384;
+      line-height: 1.6;
+      letter-spacing: 0.1px;
+    }
+
+    .product-combo-label {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1f2937;
+      letter-spacing: -0.2px;
+    }
+
+    .combo-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+      border: 1px solid #f3f4f6;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all 0.25s ease;
+      max-width: 350px;
+    }
+
+    .combo-card:hover {
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+      border-color: #f15a24;
+    }
+
+    .combo-mini-image {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      object-fit: contain;
+      flex-shrink: 0;
+      background: #fff;
+    }
+
+    .combo-card-info {
+      flex: 1;
+    }
+
+    .combo-card-name {
+      font-weight: 600;
+      font-size: 16px;
+      color: #1f2937;
+      margin-bottom: 2px;
+    }
+
+    .combo-card-price {
+      font-weight: 700;
+      font-size: 16px;
+      color: #1f2937;
+    }
+
+    .divider-line {
+      width: 100%;
+      height: 1px;
+      background: #e5e7eb;
+      margin: 4px 0;
+    }
+
+    .quantity-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .quantity-control {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .quantity-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      font-size: 20px;
+      font-weight: 600;
+      color: #374151;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Gilroy', sans-serif;
+      line-height: 1;
+    }
+
+    .quantity-btn:hover {
+      border-color: #f15a24;
+      color: #f15a24;
+      background: rgba(241, 90, 36, 0.05);
+    }
+
+    .quantity-btn:active {
+      transform: scale(0.95);
+    }
+
+    .quantity-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1f2937;
+      min-width: 30px;
+      text-align: center;
+    }
+
+    .add-to-cart-price-btn {
+      background: #f15a24;
+      border: none;
+      border-radius: 9999px;
+      padding: 14px 28px;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+      font-family: 'Gilroy', sans-serif;
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .add-to-cart-price-btn:hover {
+      background: #d94d1a;
+    }
+
+    .add-to-cart-price-btn:active {
+      transform: scale(0.98);
+    }
+
+    @media (max-width: 860px) {
+      .product-detail-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .product-image-wrapper {
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .product-info {
+        max-width: 100%;
+        width: 100%;
+      }
+
+      .product-detail-section {
+        padding-top: 24px;
+      }
+
+      .combo-card {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .product-detail-section {
+        padding: 20px clamp(12px, 4vw, 32px) 40px;
+      }
+
+      .product-image-wrapper {
+        max-width: 350px;
+      }
+
+      .product-detail-name {
+        font-size: 24px;
+      }
+
+      .combo-card {
+        padding: 10px 12px;
+        gap: 10px;
+        max-width: 100%;
+      }
+
+      .combo-mini-image {
+        width: 48px;
+        height: 48px;
+      }
+
+      .quantity-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+      }
+
+      .add-to-cart-price-btn {
+        padding: 12px 20px;
+        font-size: 15px;
+      }
+    }
+{% endblock %}
+
+{% block content %}
+    <section class="product-detail-section">
+      <div class="product-detail-container">
+        <div class="product-image-wrapper">
+          <img src="/src/combo/elem_1.png" alt="Шары залетают" class="product-detail-image" onerror="this.style.background='#f9fafb'; this.style.minHeight='300px'">
+        </div>
+
+        <div class="product-info">
+          <div class="back-row">
+            <a href="/menu/combo" class="back-button" aria-label="Назад к комбо">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+            </a>
+            <a href="/menu/combo" class="back-label">Комбо</a>
+          </div>
+
+          <h1 class="product-detail-name">Шары залетают</h1>
+
+          <p class="product-detail-description">
+            Идеально залетают под киношку и на вечеринке! Сочные мясные шарики классические 5 шт., с сыром 5 шт., пикантные Том Ям 5 шт., нежные мини-беляшки 5 шт., а ещё сырные шарики с халапенью 4 шт. и с беконом 4 шт. Шары залетают в Грильнице!
+          </p>
+
+          <p class="product-combo-label">Комбо "Шары залетают"</p>
+
+          <div class="combo-card">
+            <img src="/src/combo/elem_1.png" alt="Шары залетают" class="combo-mini-image" onerror="this.style.background='#f9fafb'">
+            <div class="combo-card-info">
+              <div class="combo-card-name">Шары залетают</div>
+              <div class="combo-card-price">729 ₽</div>
+            </div>
+          </div>
+
+          <div class="divider-line"></div>
+
+          <div class="quantity-row">
+            <div class="quantity-control">
+              <button class="quantity-btn" id="decrementBtn" aria-label="Уменьшить количество">−</button>
+              <span class="quantity-value" id="quantityValue">1</span>
+              <button class="quantity-btn" id="incrementBtn" aria-label="Увеличить количество">+</button>
+            </div>
+            <button class="add-to-cart-price-btn" id="addToCartBtn">
+              <span id="btnPrice">729 ₽</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  (function() {
+    const basePrice = 729;
+    let quantity = 1;
+    const quantityValueEl = document.getElementById('quantityValue');
+    const btnPriceEl = document.getElementById('btnPrice');
+    const decrementBtn = document.getElementById('decrementBtn');
+    const incrementBtn = document.getElementById('incrementBtn');
+    const addToCartBtn = document.getElementById('addToCartBtn');
+
+    function updateUI() {
+      quantityValueEl.textContent = quantity;
+      const total = basePrice * quantity;
+      btnPriceEl.textContent = total + ' ₽';
+    }
+
+    decrementBtn.addEventListener('click', () => {
+      if (quantity > 1) {
+        quantity--;
+        updateUI();
+      }
+    });
+
+    incrementBtn.addEventListener('click', () => {
+      quantity++;
+      updateUI();
+    });
+
+    addToCartBtn.addEventListener('click', () => {
+      const total = basePrice * quantity;
+      alert('Товар "Шары залетают" (' + quantity + ' шт.) добавлен в корзину за ' + total + ' ₽');
+      
+      // Опционально открыть панель корзины
+      if (typeof openCartPanel === 'function' && window.innerWidth >= 990) {
+        openCartPanel();
+      }
+    });
+
+    // Активируем категорию "Комбо" в навигации
+    if (typeof window.setActiveCategory === 'function') {
+      window.setActiveCategory('combo');
+    }
+
+    updateUI();
+  })();
+</script>
+{% endblock %}

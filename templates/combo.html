@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+
+{% block title %}Грильница • Комбо Барнаул{% endblock %}
+
+{% block extra_css %}
+    .menu-section {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 clamp(16px, calc((100vw - 320px) * 0.054 + 16px), 64px);
+    }
+
+    .menu-title-wrapper {
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .menu-title-wrapper h1 {
+      font-family: 'Gilroy-Extrabold', sans-serif !important;
+      text-align: center !important;
+      font-size: clamp(24px, 4vw, 28px) !important;
+      color: rgb(71, 77, 88) !important;
+      font-weight: 700 !important;
+      line-height: 32px;
+      letter-spacing: -0.3px;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      padding-bottom: 48px;
+    }
+
+    .product-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+      border: 1px solid #f3f4f6;
+      overflow: hidden;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .product-card:hover {
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+      border-color: #f15a24;
+      transform: translateY(-4px);
+    }
+
+    .product-image {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      max-height: 200px;
+      object-fit: cover;
+      display: block;
+      background: #f9fafb;
+    }
+
+    .product-content {
+      padding: 18px 22px 22px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .product-name {
+      font-weight: 700;
+      font-size: 17px;
+      color: #1f2937;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .product-description {
+      font-size: 14px;
+      color: #697384;
+      line-height: 1.6;
+      flex: 1;
+      margin-bottom: 18px;
+      letter-spacing: 0.1px;
+    }
+
+    .product-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+
+    .product-price {
+      font-weight: 800;
+      font-size: 19px;
+      color: #1f2937;
+      letter-spacing: -0.2px;
+    }
+
+    .add-to-cart-btn {
+      background: #f15a24;
+      border: none;
+      border-radius: 9999px;
+      padding: 10px 22px;
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+      font-family: 'Gilroy', sans-serif;
+      letter-spacing: 0.2px;
+      pointer-events: none;
+    }
+
+    .add-to-cart-btn:hover {
+      background: #d94d1a;
+    }
+
+    @media (max-width: 1280px) {
+      .products-grid {
+        gap: 18px;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .products-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+      .product-image {
+        max-height: 180px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+      .product-image {
+        max-height: 160px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .products-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .product-image {
+        max-height: 220px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .menu-section {
+        padding: 0 clamp(12px, 4vw, 32px);
+      }
+
+      .menu-title-wrapper {
+        margin-top: clamp(24px, 5vw, 40px);
+        margin-bottom: clamp(20px, 4vw, 32px);
+      }
+      
+      .product-content {
+        padding: 16px 18px 18px;
+      }
+      
+      .product-name {
+        font-size: 16px;
+      }
+    }
+{% endblock %}
+
+{% block content %}
+    <section class="menu-section">
+      <div class="menu-title-wrapper">
+        <h1>Комбо</h1>
+      </div>
+
+      <div class="products-grid" id="comboProductsGrid"></div>
+    </section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  (function() {
+    // Путь к изображениям относительно корня сайта
+    const imageBasePath = "/src/combo/";
+    
+    // Данные товаров (12 элементов для 3 строк по 4 штуки)
+    const products = [
+      {
+        image: imageBasePath + "elem_1.png",
+        name: "Шары залетают",
+        description: "Идеально залетают под киношку и на вечеринке! Сочные мясные шарики классические 5 шт., с сыром 5 шт., пикантные Том Ям 5 шт., нежные мини-беляшки 5 шт., а ещё сырные шарики халапеньо 4 шт. и с беконом 4 шт.",
+        price: "729 ₽",
+        link: "/menu/combo/combo-balls-foodattack"
+      },
+      {
+        image: imageBasePath + "elem_2.png",
+        name: "Покушал как у мамы",
+        description: "Вкусно, сытно и с душой. Наваристый супчик, сытная роллини и сочный воск – идеально для обеда или ужина.",
+        price: "499 ₽"
+      },
+      {
+        image: imageBasePath + "elem_3.png",
+        name: "На компанию",
+        description: "Две ароматные итальянские пиццы 30 см – «Пепперони» и «4 мяса», крылышки чикен фри 4 шт., чигеты 6 шт., сочные мясные шарики, сырные шарики, картошка фри и два соуса.",
+        price: "1999 ₽"
+      },
+      {
+        image: imageBasePath + "elem_4.png",
+        name: "На Вкусе",
+        description: "Фирменный хот-дог, золотистая хрустящая картошечка и морс на выбор – брусничный или облепиховый. Любимое сочетание для отличного перекуса!",
+        price: "549 ₽"
+      },
+      {
+        image: imageBasePath + "elem_5.png",
+        name: "Сладкая радость",
+        description: "Согревайся со вкусом! Нежные творожные шарики со сгущенкой и авторский зимний напиток на выбор.",
+        price: "319 ₽"
+      },
+      {
+        image: imageBasePath + "elem_6.png",
+        name: "3 пиццы",
+        description: "Три итальянские пиццы (30 см) – Пепперони, Карбонара и Парочка. Комбо подобрано идеально.",
+        price: "1425 ₽"
+      },
+      {
+        image: imageBasePath + "elem_7.png",
+        name: "5 пицц",
+        description: "Пять итальянских пицц (30 см) – Пепперони, 4 Масса, Молодежная, Жульен, Карбонара.",
+        price: "2595 ₽"
+      },
+      {
+        image: imageBasePath + "elem_8.png",
+        name: "7 пицц",
+        description: "Семь итальянских пицц (30 см) – Пепперони, 4 Масса, Молодежная, Жульен, Карбонара, Добрейшая, Парочка.",
+        price: "3685 ₽"
+      },
+      {
+        image: imageBasePath + "elem_9.png",
+        name: "Комбо-микс",
+        description: "Шаурма классическая, картофель фри и напиток на выбор. Сытный обед за отличную цену.",
+        price: "389 ₽"
+      },
+      {
+        image: imageBasePath + "elem_10.png",
+        name: "Двойной удар",
+        description: "Две шаурмы, две картошки фри и два соуса для тех, кто любит делиться или очень голоден.",
+        price: "649 ₽"
+      },
+      {
+        image: imageBasePath + "elem_11.png",
+        name: "Семейный",
+        description: "Пицца 30 см, 4 хот-дога, 2 картошки фри, 4 напитка. Идеально для семейного вечера.",
+        price: "1799 ₽"
+      },
+      {
+        image: imageBasePath + "elem_12.png",
+        name: "Мега-комбо",
+        description: "Самое большое комбо: пицца, шаурма, хот-дог, закуски, картошка и напитки на 4 персоны.",
+        price: "2899 ₽"
+      }
+    ];
+
+    const grid = document.getElementById('comboProductsGrid');
+    if (!grid) return;
+
+    // Рендерим карточки
+    grid.innerHTML = products.map((p, i) => `
+      <div class="product-card" data-index="${i}">
+        <img src="${p.image}" alt="${p.name}" class="product-image" onerror="this.style.background='#f3f4f6'; this.style.minHeight='150px'">
+        <div class="product-content">
+          <div class="product-name">${p.name}</div>
+          <div class="product-description">${p.description}</div>
+          <div class="product-footer">
+            <span class="product-price">${p.price}</span>
+            <button class="add-to-cart-btn">В корзину</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    // Обработчик кликов по карточкам для навигации
+    grid.addEventListener('click', (e) => {
+      const card = e.target.closest('.product-card');
+      if (!card) return;
+      
+      const index = parseInt(card.dataset.index);
+      const product = products[index];
+      
+      // Если у товара есть ссылка, переходим по ней
+      if (product.link) {
+        window.location.href = product.link;
+      }
+    });
+  })();
+  // Активируем пункт "Комбо" в навигации
+  if (typeof window.setActiveCategory === 'function') {
+    window.setActiveCategory('combo');
+  }
+</script>
+{% endblock %}

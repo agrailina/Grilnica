@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block title %}Корзина • Грильница Барнаул{% endblock %}
+
+{% block extra_css %}
+<style>
+    .basket-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: clamp(16px, 4vw, 40px) clamp(12px, 4vw, 24px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .basket-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 24px;
+        letter-spacing: -0.3px;
+        text-align: center;
+    }
+
+    .basket-warning {
+        background-color: #fcea9f;
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin-bottom: 32px;
+        width: 600px;
+        max-width: 90vw;
+        min-height: 80px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .basket-warning-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 4px;
+        text-align: center;
+    }
+
+    .basket-warning-text {
+        font-size: 13px;
+        color: #4b5563;
+        line-height: 1.4;
+        text-align: center;
+    }
+
+    .basket-image {
+        max-width: 450px;
+        width: 100%;
+        height: auto;
+        margin: 0 auto 32px;
+        display: block;
+        border-radius: 8px;
+    }
+
+    .basket-empty-text {
+        font-size: 14px;
+        color: #374151;
+        font-weight: 500;
+        margin-bottom: 8px;
+        text-align: center;
+    }
+
+    .basket-empty-subtext {
+        font-size: 14px;
+        color: #697384;
+        line-height: 1.5;
+        margin-bottom: 32px;
+        text-align: center;
+    }
+
+    .basket-menu-btn-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .basket-menu-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+        width: 172px;
+        background: #e95d52;
+        color: #fff;
+        border: none;
+        border-radius: 40px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.2s ease, transform 0.2s ease;
+        text-decoration: none;
+        font-family: 'Gilroy', sans-serif;
+        letter-spacing: 0.2px;
+        text-align: center;
+        line-height: 1;
+        padding: 0;
+    }
+
+    .basket-menu-btn:hover {
+        background: #d94d4a;
+    }
+
+    .basket-menu-btn:active {
+        transform: scale(0.98);
+    }
+
+    @media (max-width: 989px) {
+        .basket-container {
+            padding-top: 32px;
+            padding-bottom: 32px;
+        }
+        
+        .basket-title {
+            font-size: clamp(24px, 4vw, 28px);
+        }
+
+        .basket-image {
+            max-width: 450px;
+        }
+
+        .basket-warning {
+            width: 600px;
+            max-width: 90vw;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .basket-warning {
+            width: 90vw;
+            max-width: 90vw;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="basket-container">
+    <h1 class="basket-title">Корзина</h1>
+    
+    <div class="basket-warning">
+        <div class="basket-warning-title">Обратите внимание!</div>
+        <div class="basket-warning-text">Скидки по акциям не суммируются.</div>
+    </div>
+    
+    <img src="/src/basket/elem_1.png" 
+         alt="Корзина пуста" 
+         class="basket-image" 
+         onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<div style=\'width: 100%; max-width: 375px; height: 200px; background: #f3f4f6; border-radius: 8px; margin: 0 auto 32px; display: flex; align-items: center; justify-content: center; color: #9ca3af; font-size: 14px;\'>Изображение корзины</div>')">
+    
+    <p class="basket-empty-text">Корзина пуста!</p>
+    <p class="basket-empty-subtext">Добавьте вкусняшку из меню</p>
+    
+    <div class="basket-menu-btn-wrapper">
+        <a href="/" class="basket-menu-btn">Перейти в меню</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Мобильная корзина - перенаправление на /basket
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileCartBtn = document.getElementById('mobileCartBtn');
+        if (mobileCartBtn) {
+            // Переопределяем обработчик для мобильной корзины
+            const newMobileCartBtn = mobileCartBtn.cloneNode(true);
+            mobileCartBtn.parentNode.replaceChild(newMobileCartBtn, mobileCartBtn);
+            
+            newMobileCartBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                window.location.href = '/basket';
+            });
+        }
+        
+        // Также обновляем десктопные кнопки корзины
+        const cartBtns = document.querySelectorAll('.cart-btn');
+        cartBtns.forEach(btn => {
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            
+            newBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                window.location.href = '/basket';
+            });
+        });
+    });
+</script>
+{% endblock %}

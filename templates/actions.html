@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Грильница • Акции Барнаул{% endblock %}
+
+{% block extra_css %}
+    .menu-section {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 clamp(16px, calc((100vw - 320px) * 0.054 + 16px), 64px);
+    }
+
+    .menu-title-wrapper {
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .menu-title-wrapper h1 {
+      font-family: 'Gilroy', sans-serif !important;
+      text-align: center !important;
+      font-size: clamp(24px, 4vw, 28px) !important;
+      color: rgb(71, 77, 88) !important;
+      font-weight: 700 !important;
+      line-height: 32px;
+      letter-spacing: -0.3px;
+    }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      padding-bottom: 48px;
+    }
+
+    .action-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+      border: 1px solid #f3f4f6;
+      overflow: hidden;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .action-card:hover {
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+      border-color: #f15a24;
+      transform: translateY(-4px);
+    }
+
+    .action-image {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      display: block;
+      background: #f9fafb;
+    }
+
+    .action-text {
+      padding: 16px 20px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #1f2937;
+      line-height: 1.4;
+      letter-spacing: 0.1px;
+      flex: 1;
+    }
+
+    @media (max-width: 860px) {
+      .actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .actions-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .menu-section {
+        padding: 0 clamp(12px, 4vw, 32px);
+      }
+
+      .menu-title-wrapper {
+        margin-top: clamp(24px, 5vw, 40px);
+        margin-bottom: clamp(20px, 4vw, 32px);
+      }
+    }
+{% endblock %}
+
+{% block content %}
+    <section class="menu-section">
+      <div class="menu-title-wrapper">
+        <h1>Акции</h1>
+        <p style="text-align: center; color: #697384; margin-top: 8px; font-size: 16px; max-width: 700px; margin-left: auto; margin-right: auto;">
+          Мы всегда рады предложить интересные акции и выгодные предложения!  
+          Обратите внимание! Скидки по акциям не суммируются.
+        </p>
+      </div>
+
+      <div class="actions-grid">
+        <div class="action-card">
+          <img src="src/actions/act_1.png" alt="Акция 1" class="action-image" onerror="this.style.background='#fef3c7'; this.style.minHeight='180px'">
+          <div class="action-text">Такого ещё не было!</div>
+        </div>
+        <div class="action-card">
+          <img src="src/actions/act_2.png" alt="Акция 2" class="action-image" onerror="this.style.background='#fee2e2'; this.style.minHeight='180px'">
+          <div class="action-text">У нас для тебя радости!</div>
+        </div>
+        <div class="action-card">
+          <img src="src/actions/act_3.png" alt="Акция 3" class="action-image" onerror="this.style.background='#fef9c3'; this.style.minHeight='180px'">
+          <div class="action-text">Дарим пиццу всем юрлицам!</div>
+        </div>
+        <div class="action-card">
+          <img src="src/actions/act_4.png" alt="Акция 4" class="action-image" onerror="this.style.background='#ffedd5'; this.style.minHeight='180px'">
+          <div class="action-text">Шары залетают</div>
+        </div>
+        <div class="action-card">
+          <img src="src/actions/act_5.png" alt="Акция 5" class="action-image" onerror="this.style.background='#ecfccb'; this.style.minHeight='180px'">
+          <div class="action-text">Покушал как у мамы</div>
+        </div>
+        <div class="action-card">
+          <img src="src/actions/act_6.png" alt="Акция 6" class="action-image" onerror="this.style.background='#e0f2fe'; this.style.minHeight='180px'">
+          <div class="action-text">На компанию</div>
+        </div>
+        <div class="action-card">
+          <img src="src/actions/act_7.png" alt="Акция 7" class="action-image" onerror="this.style.background='#fce7f3'; this.style.minHeight='180px'">
+          <div class="action-text">На Вкусе</div>
+        </div>
+        <div class="action-card">
+          <img src="src/actions/act_8.png" alt="Акция 8" class="action-image" onerror="this.style.background='#dbeafe'; this.style.minHeight='180px'">
+          <div class="action-text">На Двоих</div>
+        </div>
+        <div class="action-card">
+          <img src="src/actions/act_9.png" alt="Акция 9" class="action-image" onerror="this.style.background='#fef3c7'; this.style.minHeight='180px'">
+          <div class="action-text">Бизнес-ланч</div>
+        </div>
+        <div class="action-card">
+          <img src="src/actions/act_10.png" alt="Акция 10" class="action-image" onerror="this.style.background='#fee2e2'; this.style.minHeight='180px'">
+          <div class="action-text">ШаурмОБЕД</div>
+        </div>
+        <div class="action-card">
+          <img src="src/actions/act_11.png" alt="Акция 11" class="action-image" onerror="this.style.background='#fef9c3'; this.style.minHeight='180px'">
+          <div class="action-text">Сытненько</div>
+        </div>
+        <div class="action-card">
+          <img src="src/actions/act_12.png" alt="Акция 12" class="action-image" onerror="this.style.background='#ffedd5'; this.style.minHeight='180px'">
+          <div class="action-text">Комбо 3, 5 и 7 пицц</div>
+        </div>
+        <div class="action-card">
+          <img src="src/actions/act_13.png" alt="Акция 13" class="action-image" onerror="this.style.background='#ecfccb'; this.style.minHeight='180px'">
+          <div class="action-text">Пицца в подарок!</div>
+        </div>
+        <div class="action-card">
+          <img src="src/actions/act_14.png" alt="Акция 14" class="action-image" onerror="this.style.background='#e0f2fe'; this.style.minHeight='180px'">
+          <div class="action-text">Заказывайте доставку выгодно!</div>
+        </div>
+      </div>
+    </section>
+{% endblock %}

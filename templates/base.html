@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover, user-scalable=no">
+  <title>{% block title %}Грильница • Барнаул{% endblock %}</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/gh/repalash/gilroy-free-webfont@fonts/Gilroy-Light.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/gh/repalash/gilroy-free-webfont@fonts/Gilroy-ExtraBold.css" rel="stylesheet">
+  <style>
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Gilroy', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 24px;
+      letter-spacing: 0.1px;
+      background: #fff;
+      color: #697384;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+
+    a, button, input, select, li, ul, ol, span, div, p, h2, h3, h4, h5, h6 {
+      list-style: none;
+      text-decoration: none;
+    }
+
+    .header-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .header-inner {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 clamp(16px, calc((100vw - 320px) * 0.054 + 16px), 64px);
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+
+    @media (min-width: 1440px) {
+      .header-inner {
+        padding-left: 48px;
+        padding-right: 48px;
+      }
+    }
+
+    .header-row-1 {
+      height: 48px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .header-row-1 .header-inner {
+      justify-content: space-between;
+      gap: clamp(8px, 2vw, 20px);
+    }
+
+    .header-row-2 {
+      height: 64px;
+      background-color: #f9fafb;
+    }
+
+    .header-row-2 .header-inner {
+      justify-content: space-between;
+      gap: clamp(4px, 1.5vw, 6px);
+    }
+
+    .header-row-3 {
+      height: clamp(60px, 7vh, 68px);
+      background-color: #e95d52;
+      color: #fff;
+    }
+
+    .header-row-3 .header-inner {
+      justify-content: center;
+      padding: 0;
+    }
+
+    .header-row-3-spacer {
+      height: 32px;
+    }
+
+    .search-input {
+      background-color: rgb(243, 246, 249);
+      border-bottom-color: rgb(226, 231, 240);
+      border-color: transparent;
+      transition: all 0.3s ease;
+    }
+
+    .search-input:hover {
+      background-color: #f3f4f6;
+    }
+
+    .search-input:focus {
+      background-color: #fff;
+      border-color: #f15a24;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(241, 90, 36, 0.2);
+    }
+
+    .nav-text {
+        color: #697384;
+        cursor: pointer;
+        transition: color 0.3s ease;
+        font-size: clamp(12px, 1.5vw, 14px);
+        line-height: 24px;
+        white-space: nowrap;
+        text-decoration: none;
+        }
+
+        .nav-text:hover {
+        color: #f15a24;
+        }
+
+
+    .more-btn {
+      color: #697384;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      height: clamp(26px, 4vw, 28px);
+      font-size: clamp(12px, 1.5vw, 14px);
+      padding: 2px clamp(4px, 1vw, 8px);
+      border-radius: 9999px;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .more-btn:hover {
+      color: #697384;
+      border-color: rgba(105, 115, 132, 0.2);
+      background: rgba(105, 115, 132, 0.05);
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border: 1px solid #f3f4f6;
+      border-radius: 12px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+      padding: 8px 0;
+      z-index: 100;
+      min-width: 180px;
+    }
+
+    .dropdown-menu.open {
+      display: block;
+    }
+
+    .dropdown-item {
+      display: block;
+      padding: 8px 16px;
+      color: #697384;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .dropdown-item:hover {
+      background: #f9fafb;
+      color: #f15a24;
+    }
+
+    .more-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .switch-container {
+      background: rgb(234, 238, 245);
+      border-radius: 9999px;
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      height: clamp(26px, 4vw, 32px);
+    }
+
+    .switch-option {
+      padding: 1px clamp(6px, 1vw, 10px);
+      border-radius: 9999px;
+      font-size: clamp(10px, 1.4vw, 14px);
+      line-height: 16px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+      color: rgb(36, 46, 51);
+      height: calc(clamp(26px, 4vw, 32px) - 4px);
+      display: flex;
+      align-items: center;
+    }
+
+    .switch-option.active {
+      background: #fff;
+      color: #f15a24;
+      font-weight: 600;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .switch-option:not(.active):hover {
+      color: #f15a24;
+    }
+
+    .address-text {
+      color: #f15a24;
+      transition: color 0.3s ease;
+      font-size: clamp(10px, 1.4vw, 14px);
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .address-text:hover {
+      color: #000;
+    }
+
+    .phone-number {
+      color: rgb(71, 77, 88);
+      cursor: pointer;
+      font-weight: 600;
+      transition: color 0.2s ease;
+      font-size: clamp(10px, 1.4vw, 14px);
+    }
+
+    .phone-number:hover {
+      color: #f15a24;
+    }
+
+    .phone-numbers-group {
+      display: flex;
+      align-items: center;
+      gap: clamp(8px, 2vw, 24px);
+    }
+
+    .login-btn, .cart-btn {
+      border-radius: 9999px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #697384;
+      border: 1px solid transparent;
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .login-btn {
+      padding: 2px clamp(4px, 1vw, 8px);
+      gap: 3px;
+      height: clamp(26px, 4vw, 28px);
+      font-size: clamp(10px, 1.4vw, 14px);
+    }
+
+    .cart-btn {
+      padding: 4px clamp(8px, 1.5vw, 12px);
+      gap: 6px;
+      height: clamp(28px, 4.5vw, 32px);
+      font-size: clamp(12px, 1.4vw, 14px);
+    }
+
+    .login-btn:hover, .cart-btn:hover {
+      color: #f15a24;
+      border-color: #f15a24;
+      background: rgba(241, 90, 36, 0.05);
+    }
+
+    .login-icon {
+      width: clamp(0.9rem, 1.5vw, 1.1rem);
+      height: clamp(0.9rem, 1.5vw, 1.1rem);
+      transition: fill 0.3s ease;
+    }
+
+    .login-btn:hover .login-icon path {
+      fill: #f15a24;
+    }
+
+    .cart-icon {
+      width: clamp(18px, 2vw, 20px);
+      height: clamp(18px, 2vw, 20px);
+      object-fit: contain;
+      transition: filter 0.3s ease;
+    }
+
+    .cart-btn:hover .cart-icon {
+      filter: brightness(0) saturate(100%) invert(35%) sepia(87%) saturate(1792%) hue-rotate(346deg) brightness(97%) contrast(95%);
+    }
+
+    .category-item {
+      transition: all 0.2s ease;
+      cursor: pointer;
+      white-space: nowrap;
+      color: rgba(255, 255, 255, 0.9);
+      display: flex;
+      align-items: center;
+      gap: clamp(3px, 1vw, 6px);
+      padding: clamp(2px, 0.5vw, 6px) clamp(2px, 1vw, 4px);
+      flex: 1;
+      justify-content: center;
+    }
+
+    .category-item.active-category, .category-item:hover, .category-item:hover .category-text {
+      color: #fcea9f;
+    }
+
+    .category-item.active-category {
+      font-weight: 700;
+    }
+
+    .category-icon {
+      width: clamp(32px, 4vw, 38px);
+      height: clamp(32px, 4vw, 38px);
+      object-fit: contain;
+      transition: filter 0.2s ease;
+    }
+
+    .logo-link {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      flex-shrink: 0;
+    }
+
+    .logo-image {
+      height: clamp(42px, 5vw, 52px);
+      width: auto;
+      object-fit: contain;
+    }
+
+    .logo-text-image {
+      height: clamp(34px, 4.5vw, 48px);
+      width: auto;
+      object-fit: contain;
+    }
+
+    .header-left-group, .header-right-group {
+      display: flex;
+      align-items: center;
+      gap: clamp(6px, 1.5vw, 12px);
+      flex-shrink: 0;
+    }
+
+    .header-actions-group {
+      display: flex;
+      align-items: center;
+      gap: clamp(8px, 2vw, 16px);
+      height: 32px;
+    }
+    
+    .category-list-wrapper {
+      width: 100%;
+    }
+
+    .category-list {
+      display: flex;
+      align-items: center;
+      justify-content: space-evenly;
+      width: 100%;
+      gap: clamp(4px, 1.5vw, 6px);
+      font-weight: 600;
+      color: white;
+      overflow-x: auto;
+      font-size: clamp(12px, 1.5vw, 14px);
+    }
+
+    .search-wrapper {
+      height: clamp(28px, 4vw, 32px);
+    }
+
+    .search-input {
+      height: clamp(28px, 4vw, 32px);
+      padding-top: 0;
+      padding-bottom: 0;
+      font-size: clamp(12px, 1.3vw, 14px);
+    }
+
+    .mobile-header {
+      display: none;
+    }
+
+    @media (max-width: 989px) {
+      .header-row-1, .header-row-2, .header-row-3, .header-row-3-spacer {
+        display: none !important;
+      }
+
+      .mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        height: 64px;
+        padding: 0 clamp(12px, 4vw, 32px);
+        background: #fff;
+        border-bottom: 1px solid #f3f4f6;
+        gap: clamp(8px, 3vw, 20px);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .mobile-left, .mobile-right {
+        display: flex;
+        align-items: center;
+        gap: clamp(4px, 2vw, 16px);
+        flex-shrink: 0;
+      }
+
+      .mobile-logo {
+        display: flex;
+        align-items: center;
+        gap: clamp(4px, 1vw, 8px);
+      }
+
+      .logo-image_2 {
+        height: clamp(24px, 5vw, 32px);
+        width: auto;
+        object-fit: contain;
+      }
+
+      .mobile-icon-btn {
+        width: clamp(36px, 8vw, 44px);
+        height: clamp(36px, 8vw, 44px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: #697384;
+        background: transparent;
+        border: 1px solid transparent;
+      }
+
+      .mobile-icon-btn:hover {
+        background: rgba(241, 90, 36, 0.1);
+        border-color: #f15a24;
+        color: #f15a24;
+      }
+
+      .mobile-icon-btn svg {
+        width: clamp(20px, 4vw, 24px);
+        height: clamp(20px, 4vw, 24px);
+        transition: fill 0.3s ease, color 0.3s ease;
+      }
+
+      .mobile-icon-btn:hover svg {
+        fill: #f15a24;
+        color: #f15a24;
+      }
+
+      .phone-dropdown {
+        display: none;
+        position: absolute;
+        top: 110%;
+        right: 0;
+        background: white;
+        border: 1px solid #f3f4f6;
+        border-radius: 16px;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+        padding: 12px 16px;
+        z-index: 200;
+        min-width: clamp(180px, 40vw, 220px);
+        white-space: nowrap;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .phone-dropdown.open {
+        display: flex;
+      }
+
+      .phone-dropdown-item {
+        color: #1f2937;
+        font-weight: 600;
+        font-size: clamp(14px, 2.5vw, 16px);
+        text-decoration: none;
+        transition: color 0.2s ease;
+        cursor: pointer;
+        padding: 6px 0;
+        display: block;
+        border-bottom: 1px solid #f9fafb;
+      }
+
+      .phone-dropdown-item:last-child {
+        border-bottom: none;
+      }
+
+      .phone-dropdown-item:hover {
+        color: #f15a24;
+      }
+
+      .phone-wrapper {
+        position: relative;
+        display: inline-flex;
+      }
+    }
+
+    @media (max-width: 1439px) {
+      .more-btn { display: inline-flex; }
+      .nav-text.hide-on-mobile { display: none; }
+    }
+
+    @media (min-width: 1440px) {
+      .more-btn { display: none; }
+      .dropdown-menu { display: none !important; }
+    }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Footer */
+    .footer-block {
+      background-color: #f3f6f9;
+      margin-top: 64px;
+      padding: 48px clamp(12px, 4vw, 32px);
+    }
+
+    .footer-logo-text {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1f2937;
+      letter-spacing: -0.2px;
+    }
+
+    .footer-description {
+      color: #697384;
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .footer-link {
+      color: #697384;
+      transition: color 0.2s ease;
+      display: block;
+      margin-bottom: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .footer-link:hover {
+      color: #f15a24;
+    }
+
+    .footer-title {
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 16px;
+      font-size: 20px;
+      letter-spacing: 0.2px;
+    }
+
+    .footer-phone {
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .footer-accordion-item {
+      border-bottom: none;
+    }
+
+    .footer-accordion-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 0;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.2s ease;
+      gap: 8px;
+    }
+
+    .footer-accordion-header:hover {
+      color: #f15a24;
+    }
+
+    .footer-accordion-header .arrow {
+      display: inline-block;
+      transition: transform 0.3s ease;
+      font-size: 18px;
+      color: #697384;
+      flex-shrink: 0;
+    }
+
+    .footer-accordion-header .arrow.open {
+      transform: rotate(90deg);
+    }
+
+    .footer-accordion-header .title-text {
+      font-weight: 700;
+      color: #1f2937;
+      font-size: 18px;
+      letter-spacing: 0.2px;
+      text-align: center;
+    }
+
+    .footer-accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .footer-accordion-content.open {
+      max-height: 500px;
+    }
+
+    .footer-accordion-content-inner {
+      padding-bottom: 16px;
+      text-align: center;
+    }
+
+    .footer-accordion-content .footer-link,
+    .footer-accordion-content .footer-phone {
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    @media (max-width: 989px) {
+      .footer-desktop-grid {
+        display: none !important;
+      }
+      .footer-accordion {
+        display: block;
+      }
+    }
+
+    @media (min-width: 990px) {
+      .footer-accordion {
+        display: none !important;
+      }
+      .footer-desktop-grid {
+        display: grid !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .footer-logo-text { font-size: clamp(1.2rem, 3vw, 1.5rem); }
+      .footer-description { font-size: clamp(12px, 2.5vw, 14px); line-height: 1.5; }
+      .footer-title { font-size: clamp(16px, 3vw, 20px); }
+      .footer-link { font-size: clamp(12px, 2.5vw, 14px); }
+    }
+
+    /* Cart Panel */
+    .cart-panel-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(2px);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .cart-panel-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .cart-panel {
+      position: fixed;
+      top: 0;
+      right: -420px;
+      width: 400px;
+      max-width: 90vw;
+      height: 100vh;
+      background: #fff;
+      box-shadow: -8px 0 30px rgba(0, 0, 0, 0.12);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      border-left: 1px solid #f3f4f6;
+    }
+
+    .cart-panel.open {
+      right: 0;
+    }
+
+    .cart-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid #f3f4f6;
+      flex-shrink: 0;
+    }
+
+    .cart-panel-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1f2937;
+      margin: 0;
+      letter-spacing: -0.2px;
+    }
+
+    .cart-panel-close {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #697384;
+      transition: all 0.2s ease;
+    }
+
+    .cart-panel-close:hover {
+      background: #f3f4f6;
+      color: #f15a24;
+    }
+
+    .cart-panel-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      flex: 1;
+      gap: 12px;
+    }
+
+    .cart-empty-icon {
+      margin-bottom: 8px;
+      opacity: 0.6;
+    }
+
+    .cart-empty-text {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1f2937;
+      margin: 0;
+    }
+
+    .cart-empty-subtext {
+      font-size: 14px;
+      color: #9ca3af;
+      margin: 0 0 8px 0;
+    }
+
+    .cart-divider {
+      width: 100%;
+      height: 1px;
+      background: #f3f4f6;
+      margin: 16px 0;
+    }
+
+    .cart-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 8px 0;
+    }
+
+    .cart-total-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .cart-total-price {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .cart-panel-footer {
+      padding: 16px 24px 24px;
+      border-top: 1px solid #f3f4f6;
+      flex-shrink: 0;
+    }
+
+    .cart-menu-btn {
+      width: 100%;
+      padding: 14px 24px;
+      background: #f15a24;
+      color: #fff;
+      border: none;
+      border-radius: 40px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      font-family: 'Gilroy', sans-serif;
+      letter-spacing: 0.2px;
+    }
+
+    .cart-menu-btn:hover {
+      background: #d94d1a;
+    }
+
+    .cart-menu-btn:active {
+      transform: scale(0.98);
+    }
+
+    @media (max-width: 989px) {
+      .cart-panel,
+      .cart-panel-overlay {
+        display: none !important;
+      }
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0.2s, opacity 0.2s ease;
+    }
+
+    .modal-overlay.open {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .modal-container {
+      background: white;
+      border-radius: 28px;
+      width: 90%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 28px 24px 24px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .modal-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1f2937;
+      text-align: center;
+      letter-spacing: -0.2px;
+    }
+
+    .modal-switch {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .modal-switch-option {
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      padding-bottom: 8px;
+      color: #6b7280;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .modal-switch-option.active {
+      color: #f15a24;
+    }
+
+    .modal-switch-option.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: #f15a24;
+      border-radius: 3px;
+    }
+
+    .select-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: -12px;
+    }
+
+    .custom-select { position: relative; width: 100%; }
+
+    .select-trigger {
+      background: #f3f4f6;
+      border-radius: 40px;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-weight: 500;
+      color: #1f2937;
+      border: 1px solid transparent;
+    }
+
+    .select-trigger:hover { background: #e5e7eb; }
+
+    .dropdown-list {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 100%;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+      max-height: 220px;
+      overflow-y: auto;
+      z-index: 20;
+      display: none;
+    }
+
+    .dropdown-list.open { display: block; }
+
+    .dropdown-item-select {
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+      color: #374151;
+      font-weight: 500;
+    }
+
+    .dropdown-item-select:hover {
+      background: #f9fafb;
+      color: #f15a24;
+    }
+
+    .map-container {
+      height: 200px;
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #f3f4f6;
+      z-index: 1;
+    }
+
+    .confirm-btn {
+      background: #f15a24;
+      border: none;
+      border-radius: 40px;
+      padding: 14px;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-align: center;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .confirm-btn:hover { background: #d94d1a; }
+
+    .divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 4px 0;
+    }
+
+    .delivery-input {
+      background: #f3f4f6;
+      border-radius: 40px;
+      padding: 14px 20px;
+      border: 1px solid transparent;
+      font-size: 14px;
+      color: #1f2937;
+      outline: none;
+      width: 100%;
+      transition: all 0.2s;
+      font-family: 'Gilroy', sans-serif;
+    }
+
+    .delivery-input:focus {
+      background: #fff;
+      border-color: #f15a24;
+      box-shadow: 0 0 0 2px rgba(241, 90, 36, 0.2);
+    }
+
+    .delivery-input::placeholder {
+      color: #9ca3af;
+    }
+
+    .delivery-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .delivery-row .delivery-input {
+      flex: 1;
+    }
+
+    /* Mobile Navigation Panel */
+    .mobile-nav-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+    }
+
+    .mobile-nav-panel.open {
+      transform: translateX(0);
+    }
+
+    .mobile-nav-header {
+      padding: 20px clamp(12px, 4vw, 24px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #f3f4f6;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .mobile-nav-back-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #697384;
+      background: transparent;
+      border: 1px solid transparent;
+    }
+
+    .mobile-nav-back-btn:hover {
+      background: rgba(241, 90, 36, 0.15);
+      border-color: #f15a24;
+      color: #f15a24;
+    }
+
+    .mobile-nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .mobile-nav-logo img {
+      height: 32px;
+      width: auto;
+    }
+
+    .mobile-nav-logo-text {
+      height: 26px;
+      width: auto;
+    }
+
+    .mobile-nav-address-section {
+      padding: 24px clamp(12px, 4vw, 24px);
+      text-align: center;
+      border-bottom: 1px solid #e5e7eb;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .mobile-nav-address-section:hover {
+      opacity: 0.7;
+    }
+
+    .mobile-nav-city {
+      font-size: 16px;
+      font-weight: 600;
+      color: #242e33;
+      margin-bottom: 4px;
+    }
+
+    .mobile-nav-full-address {
+      font-size: 16px;
+      font-weight: 600;
+      color: #242e33;
+    }
+
+    .mobile-nav-links {
+      flex: 1;
+      padding: 0;
+      text-align: center;
+    }
+
+    .mobile-nav-link {
+      display: block;
+      padding: 16px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #242e33;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      text-decoration: none;
+    }
+
+    .mobile-nav-link:hover {
+      color: #f15a24;
+    }
+
+    .mobile-nav-login-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 16px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #242e33;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      width: 100%;
+      text-align: center;
+    }
+
+    .mobile-nav-login-btn:hover {
+      color: #f15a24;
+    }
+
+    .mobile-nav-login-btn svg {
+      width: 18px;
+      height: 18px;
+      transition: fill 0.3s ease;
+    }
+
+    .mobile-nav-login-btn:hover svg path {
+      fill: #f15a24;
+    }
+
+    .mobile-nav-footer {
+      padding: 12px clamp(12px, 4vw, 24px) 40px;
+      text-align: center;
+    }
+
+    .mobile-nav-phone {
+      font-size: 16px;
+      font-weight: 600;
+      color: #242e33;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      text-decoration: none;
+    }
+
+    .mobile-nav-phone:hover {
+      color: #f15a24;
+    }
+
+{% block extra_css %}{% endblock %}
+  </style>  
+
+</head>
+<body class="min-h-screen bg-white">
+  <header>
+    <!-- Desktop Header -->
+    <div class="header-row header-row-1">
+      <div class="header-inner">
+        <div class="header-left-group">
+          <div class="switch-container" id="serviceSwitch">
+            <span class="switch-option active" data-mode="restaurant">В ресторане</span>
+            <span class="switch-option" data-mode="delivery">Доставка</span>
+          </div>
+          <span class="address-text" id="openModalBtn">Барнаул Павловский тракт, 291</span>
+        </div>
+        <div class="header-right-group" id="navContainer">
+            <a href="/actions" class="nav-text">Акции</a>
+            <a href="/restaurants" class="nav-text hide-on-mobile">Рестораны</a>
+            <a href="#" class="nav-text hide-on-mobile">Доставка</a>
+            <a href="/qual" class="nav-text hide-on-mobile">Служба заботы</a>
+            <span class="nav-text hide-on-mobile">Карьера</span>
+            <span class="nav-text hide-on-mobile">Франшиза</span>
+            <div class="more-wrapper">
+                <span class="more-btn" id="moreBtn">Ещё</span>
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="/restaurants" class="dropdown-item">Рестораны</a>
+                    <a href="#" class="dropdown-item">Доставка</a>
+                    <a href="/qual" class="dropdown-item">Служба заботы</a>
+                    <a href="#" class="dropdown-item">Карьера</a>
+                    <a href="#" class="dropdown-item">Франшиза</a>
+                </div>
+            </div>
+            <span class="login-btn" onclick="location.href='/login'" style="cursor: pointer;">
+                <svg viewBox="0 0 24 24" class="login-icon" role="presentation">
+                <path d="M18.22 12.708L14.825 16.108C14.7321 16.2008 14.6218 16.2745 14.5004 16.3247C14.3791 16.3749 14.249 16.4007 14.1177 16.4007C13.9863 16.4007 13.8562 16.3747 13.7349 16.3244C13.6136 16.2741 13.5033 16.2004 13.4105 16.1075C13.3177 16.0146 13.244 15.9043 13.1938 15.7829C13.1436 15.6616 13.1178 15.5315 13.1178 15.4001C13.1179 15.1349 13.2234 14.8805 13.411 14.693L15.1 13H10.694C10.4288 13 10.1744 12.8946 9.9869 12.7071C9.79936 12.5196 9.694 12.2652 9.694 12C9.694 11.7348 9.79936 11.4804 9.9869 11.2929C10.1744 11.1054 10.4288 11 10.694 11H15.1L13.411 9.312C13.2364 9.12201 13.142 8.87187 13.1475 8.61388C13.153 8.3559 13.2581 8.11003 13.4407 7.92769C13.6233 7.74536 13.8693 7.64066 14.1273 7.6355C14.3853 7.63034 14.6353 7.72511 14.825 7.9L18.22 11.294C18.3136 11.3869 18.3875 11.4978 18.437 11.62C18.5381 11.8646 18.5381 12.1394 18.437 12.384C18.3872 12.5055 18.3134 12.6157 18.22 12.708ZM16.646 17.927C16.3808 17.927 16.1264 18.0324 15.9389 18.2199C15.7514 18.4074 15.646 18.6618 15.646 18.927C15.6457 19.0189 15.6091 19.1069 15.544 19.1717C15.479 19.2366 15.3909 19.273 15.299 19.273H8.7C8.60815 19.273 8.52004 19.2366 8.45499 19.1717C8.38994 19.1069 8.35327 19.0189 8.353 18.927V5.073C8.35327 4.98105 8.38991 4.89294 8.45493 4.82792C8.51995 4.76291 8.60805 4.72626 8.7 4.726H15.3C15.392 4.72626 15.4801 4.76291 15.5451 4.82792C15.6101 4.89294 15.6467 4.98105 15.647 5.073V5.917C15.647 6.18221 15.7524 6.43657 15.9399 6.6241C16.1274 6.81164 16.3818 6.917 16.647 6.917C16.9122 6.917 17.1666 6.81164 17.3541 6.6241C17.5416 6.43657 17.647 6.18221 17.647 5.917V5.073C17.6465 4.4507 17.399 3.85404 16.959 3.414C16.519 2.97397 15.9223 2.72653 15.3 2.726H8.7C8.07796 2.72706 7.48171 2.9747 7.04195 3.41465C6.60219 3.85459 6.3548 4.45095 6.354 5.073V18.927C6.3548 19.549 6.60222 20.1452 7.04201 20.585C7.4818 21.0248 8.07805 21.2722 8.7 21.273H15.3C15.9222 21.2727 16.5189 21.0255 16.9589 20.5856C17.399 20.1458 17.6465 19.5492 17.647 18.927C17.647 18.7956 17.6211 18.6655 17.5708 18.5441C17.5205 18.4227 17.4467 18.3124 17.3538 18.2195C17.2608 18.1267 17.1504 18.053 17.029 18.0028C16.9076 17.9526 16.7774 17.9269 16.646 17.927Z" fill="#697384"/>
+                </svg>
+                Войти
+            </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-row header-row-2">
+      <div class="header-inner">
+        <a href="/" class="logo-link" aria-label="Грильница — на главную">
+          <img src="/src/logo.png" alt="Грильница логотип" class="logo-image" onerror="this.style.display='none'">
+          <img src="/src/logo_str.png" alt="Грильница" class="logo-text-image" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<span class=\'text-2xl md:text-3xl font-extrabold tracking-tight text-gray-900\'>грильница</span>')">
+        </a>
+        <div class="header-actions-group">
+          <div class="phone-numbers-group">
+            <span class="phone-number">8 (903) 991-02-53</span>
+            <span class="phone-number hidden sm:inline">8 (903) 991-04-05</span>
+          </div>
+          <div class="relative hidden sm:block search-wrapper h-full">
+            <input type="text" placeholder="найти блюдо" class="pl-4 pr-10 py-2 border rounded-full text-sm w-48 md:w-[216px] focus:outline-none search-input h-full box-border" style="border-color: rgb(226, 231, 240);" />
+            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+              <img src="/src/search.png" alt="Поиск" class="w-4 h-4 opacity-60">
+            </span>
+          </div>
+          <button class="cart-btn h-full">
+            <img src="/src/cart.png" alt="Корзина" class="cart-icon" onerror="this.style.display='none'">
+            Корзина
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-row header-row-3">
+      <div class="header-inner">
+        <div class="category-list-wrapper">
+          <div class="category-list no-scrollbar" id="categoryList">
+            <span class="category-item" data-category="combo"><img src="/src/eat_1.png" alt="Комбо" class="category-icon" onerror="this.style.display='none'"><span class="category-text">Комбо</span></span>
+            <span class="category-item" data-category="shawarma"><img src="/src/eat_2.png" alt="Шаурма" class="category-icon" onerror="this.style.display='none'"><span class="category-text">Шаурма</span></span>
+            <span class="category-item" data-category="pizza"><img src="/src/eat_3.png" alt="Пицца" class="category-icon" onerror="this.style.display='none'"><span class="category-text">Пицца</span></span>
+            <span class="category-item" data-category="fries"><img src="/src/eat_4.png" alt="Фри" class="category-icon" onerror="this.style.display='none'"><span class="category-text">Фри</span></span>
+            <span class="category-item" data-category="wok"><img src="/src/eat_5.png" alt="Вок" class="category-icon" onerror="this.style.display='none'"><span class="category-text">Вок</span></span>
+            <span class="category-item" data-category="simple"><img src="/src/eat_6.png" alt="Просто поесть" class="category-icon" onerror="this.style.display='none'"><span class="category-text">Просто поесть</span></span>
+            <span class="category-item" data-category="rolls"><img src="/src/eat_7.png" alt="Роллы" class="category-icon" onerror="this.style.display='none'"><span class="category-text">Роллы</span></span>
+            <span class="category-item" data-category="drinks"><img src="/src/eat_8.png" alt="Напитки" class="category-icon" onerror="this.style.display='none'"><span class="category-text">Напитки</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-row-3-spacer"></div>
+
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <div class="mobile-left">
+            <div class="mobile-icon-btn" id="mobileMenuBtn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+            </div>
+            <a href="/" class="mobile-logo" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: clamp(4px, 1vw, 8px);">
+            <img src="/src/logo_2.png" alt="Грильница логотип" class="logo-image_2" onerror="this.style.display='none'">
+            <img src="/src/logo_str_2.png" alt="Грильница" class="logo-text-image" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<span class=\'text-xl font-extrabold tracking-tight text-gray-900\'>грильница</span>')">
+            </a>
+        </div>
+        <div class="mobile-right">
+            <div class="phone-wrapper">
+            <div class="mobile-icon-btn" id="mobilePhoneBtn">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            </div>
+            <div class="phone-dropdown" id="phoneDropdown">
+                <a href="tel:+79039910253" class="phone-dropdown-item">8 (903) 991-02-53</a>
+                <a href="tel:+79039910405" class="phone-dropdown-item">8 (903) 991-04-05</a>
+            </div>
+            </div>
+            <div class="mobile-icon-btn" id="mobileCartBtn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </div>
+        </div>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Panel -->
+  <div class="mobile-nav-panel" id="mobileNavPanel">
+    <div class="mobile-nav-header">
+      <div class="mobile-nav-back-btn" id="mobileNavBackBtn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </div>
+      <a href="/" class="mobile-nav-logo" id="mobileNavLogo">
+        <img src="/src/logo_2.png" alt="Грильница логотип" onerror="this.style.display='none'">
+        <img src="/src/logo_str_2.png" alt="Грильница" class="mobile-nav-logo-text" onerror="this.style.display='none'">
+      </a>
+      <div style="width: 40px;"></div>
+    </div>
+
+    <div class="mobile-nav-address-section" id="mobileNavAddress">
+      <div class="mobile-nav-city">Барнаул</div>
+      <div class="mobile-nav-full-address">Барнаул Павловский тракт, 291</div>
+    </div>
+
+    <div class="mobile-nav-links">
+      <a href="/actions" class="mobile-nav-link">Акции</a>
+      <a href="/restaurants" class="mobile-nav-link">Рестораны</a>
+      <a href="#" class="mobile-nav-link">Доставка</a>
+      <a href="/qual" class="mobile-nav-link">Служба заботы</a>
+      <a href="#" class="mobile-nav-link">Карьера</a>
+      <a href="#" class="mobile-nav-link">Франшиза</a>
+      <div class="mobile-nav-login-btn" onclick="location.href='/login'">
+        <svg viewBox="0 0 24 24" role="presentation">
+          <path d="M18.22 12.708L14.825 16.108C14.7321 16.2008 14.6218 16.2745 14.5004 16.3247C14.3791 16.3749 14.249 16.4007 14.1177 16.4007C13.9863 16.4007 13.8562 16.3747 13.7349 16.3244C13.6136 16.2741 13.5033 16.2004 13.4105 16.1075C13.3177 16.0146 13.244 15.9043 13.1938 15.7829C13.1436 15.6616 13.1178 15.5315 13.1178 15.4001C13.1179 15.1349 13.2234 14.8805 13.411 14.693L15.1 13H10.694C10.4288 13 10.1744 12.8946 9.9869 12.7071C9.79936 12.5196 9.694 12.2652 9.694 12C9.694 11.7348 9.79936 11.4804 9.9869 11.2929C10.1744 11.1054 10.4288 11 10.694 11H15.1L13.411 9.312C13.2364 9.12201 13.142 8.87187 13.1475 8.61388C13.153 8.3559 13.2581 8.11003 13.4407 7.92769C13.6233 7.74536 13.8693 7.64066 14.1273 7.6355C14.3853 7.63034 14.6353 7.72511 14.825 7.9L18.22 11.294C18.3136 11.3869 18.3875 11.4978 18.437 11.62C18.5381 11.8646 18.5381 12.1394 18.437 12.384C18.3872 12.5055 18.3134 12.6157 18.22 12.708ZM16.646 17.927C16.3808 17.927 16.1264 18.0324 15.9389 18.2199C15.7514 18.4074 15.646 18.6618 15.646 18.927C15.6457 19.0189 15.6091 19.1069 15.544 19.1717C15.479 19.2366 15.3909 19.273 15.299 19.273H8.7C8.60815 19.273 8.52004 19.2366 8.45499 19.1717C8.38994 19.1069 8.35327 19.0189 8.353 18.927V5.073C8.35327 4.98105 8.38991 4.89294 8.45493 4.82792C8.51995 4.76291 8.60805 4.72626 8.7 4.726H15.3C15.392 4.72626 15.4801 4.76291 15.5451 4.82792C15.6101 4.89294 15.6467 4.98105 15.647 5.073V5.917C15.647 6.18221 15.7524 6.43657 15.9399 6.6241C16.1274 6.81164 16.3818 6.917 16.647 6.917C16.9122 6.917 17.1666 6.81164 17.3541 6.6241C17.5416 6.43657 17.647 6.18221 17.647 5.917V5.073C17.6465 4.4507 17.399 3.85404 16.959 3.414C16.519 2.97397 15.9223 2.72653 15.3 2.726H8.7C8.07796 2.72706 7.48171 2.9747 7.04195 3.41465C6.60219 3.85459 6.3548 4.45095 6.354 5.073V18.927C6.3548 19.549 6.60222 20.1452 7.04201 20.585C7.4818 21.0248 8.07805 21.2722 8.7 21.273H15.3C15.9222 21.2727 16.5189 21.0255 16.9589 20.5856C17.399 20.1458 17.6465 19.5492 17.647 18.927C17.647 18.7956 17.6211 18.6655 17.5708 18.5441C17.5205 18.4227 17.4467 18.3124 17.3538 18.2195C17.2608 18.1267 17.1504 18.053 17.029 18.0028C16.9076 17.9526 16.7774 17.9269 16.646 17.927Z" fill="#697384"/>
+        </svg>
+        Войти
+      </div>
+    </div>
+
+    <div class="mobile-nav-footer">
+      <a href="tel:+79039909034" class="mobile-nav-phone">+7 903 990 90 34</a>
+      <br>
+      <a href="tel:+79039909577" class="mobile-nav-phone">+7 903 990 95 77</a>
+    </div>
+  </div>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer-block">
+    <div class="max-w-[1200px] mx-auto px-4">
+      <div class="text-center mb-12">
+        <a href="/" class="flex items-center justify-center gap-2 mb-4" style="text-decoration: none; color: inherit;">
+          <img src="/src/logo.png" alt="Грильница логотип" class="h-8 md:h-9 w-auto object-contain" onerror="this.style.background='#f3f4f6'; this.style.width='40px'; this.style.height='40px'; this.style.borderRadius='8px'; this.style.display='inline-block'">
+          <span class="footer-logo-text">грильница</span>
+        </a>
+        <p class="footer-description text-center mx-auto">
+          Грильница — это место, где знакомо, вкусно, с душой!<br>
+          Мы — сеть ресторанов быстрого питания.<br>
+          Готовим качественную еду, по доступной цене,<br>
+          чтобы радовать вас в любой момент дня.<br>
+          С любовью к еде и людям — ваша Грильница.
+        </p>
+      </div>
+
+      <div class="footer-desktop-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+        <div><h3 class="footer-title">Компания</h3><a class="footer-link">О нас</a><a class="footer-link">Рестораны</a></div>
+        <div><h3 class="footer-title">Партнерам</h3><a class="footer-link">Франшиза</a><a class="footer-link">Аренда</a><a class="footer-link">Снабжение</a></div>
+        <div><h3 class="footer-title">Карьера</h3><a class="footer-link">Стать тайным покупателем</a><a class="footer-link">Работа в Грильнице</a></div>
+        <div><h3 class="footer-title">Контакты</h3><a class="footer-link">Служба заботы</a><div class="footer-phone">8 (800) 100-82-90</div><div class="footer-phone">+7 (3852) 50-50-65</div></div>
+        <div><h3 class="footer-title">Документы</h3><a class="footer-link">Публичная оферта</a><a class="footer-link">Политика конфиденциальности</a><a class="footer-link">Согласие на обработку ПД</a><a class="footer-link font-semibold" style="margin-top: 12px;">Подробное меню</a></div>
+      </div>
+
+      <div class="footer-accordion" id="footerAccordion">
+        <div class="footer-accordion-item">
+          <div class="footer-accordion-header" data-section="company"><span class="arrow">></span><span class="title-text">Компания</span></div>
+          <div class="footer-accordion-content" data-content="company"><div class="footer-accordion-content-inner"><a class="footer-link">О нас</a><a class="footer-link">Рестораны</a></div></div>
+        </div>
+        <div class="footer-accordion-item">
+          <div class="footer-accordion-header" data-section="partners"><span class="arrow">></span><span class="title-text">Партнерам</span></div>
+          <div class="footer-accordion-content" data-content="partners"><div class="footer-accordion-content-inner"><a class="footer-link">Франшиза</a><a class="footer-link">Аренда</a><a class="footer-link">Снабжение</a></div></div>
+        </div>
+        <div class="footer-accordion-item">
+          <div class="footer-accordion-header" data-section="career"><span class="arrow">></span><span class="title-text">Карьера</span></div>
+          <div class="footer-accordion-content" data-content="career"><div class="footer-accordion-content-inner"><a class="footer-link">Стать тайным покупателем</a><a class="footer-link">Работа в Грильнице</a></div></div>
+        </div>
+        <div class="footer-accordion-item">
+          <div class="footer-accordion-header" data-section="contacts"><span class="arrow">></span><span class="title-text">Контакты</span></div>
+          <div class="footer-accordion-content" data-content="contacts"><div class="footer-accordion-content-inner"><a class="footer-link">Служба заботы</a><div class="footer-phone">8 (800) 100-82-90</div><div class="footer-phone">+7 (3852) 50-50-65</div></div></div>
+        </div>
+        <div class="footer-accordion-item">
+          <div class="footer-accordion-header" data-section="documents"><span class="arrow">></span><span class="title-text">Документы</span></div>
+          <div class="footer-accordion-content" data-content="documents"><div class="footer-accordion-content-inner"><a class="footer-link">Публичная оферта</a><a class="footer-link">Политика конфиденциальности</a><a class="footer-link">Согласие на обработку ПД</a><a class="footer-link font-semibold">Подробное меню</a></div></div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Restaurant Modal -->
+  <div class="modal-overlay" id="restaurantModal">
+    <div class="modal-container">
+      <h2 class="modal-title">Выберите ресторан</h2>
+      <div class="modal-switch" id="modalSwitchRestaurant">
+        <span class="modal-switch-option active" data-mode="restaurant">В ресторане</span>
+        <span class="modal-switch-option" data-mode="delivery">Доставка</span>
+      </div>
+      <span class="select-label">Город*</span>
+      <div class="custom-select" id="citySelect">
+        <div class="select-trigger" id="cityTrigger">
+          <span>Барнаул</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="dropdown-list" id="cityDropdown">
+          <div class="dropdown-item-select" data-value="Барнаул" data-lat="53.354" data-lng="83.776">Барнаул</div>
+          <div class="dropdown-item-select" data-value="Алейск" data-lat="52.492" data-lng="82.779">Алейск</div>
+          <div class="dropdown-item-select" data-value="Бийск" data-lat="52.579" data-lng="85.207">Бийск</div>
+          <div class="dropdown-item-select" data-value="Горно-Алтайск" data-lat="51.960" data-lng="85.960">Горно-Алтайск</div>
+          <div class="dropdown-item-select" data-value="Заринск" data-lat="53.713" data-lng="84.931">Заринск</div>
+          <div class="dropdown-item-select" data-value="Новосибирск" data-lat="55.008" data-lng="82.935">Новосибирск</div>
+          <div class="dropdown-item-select" data-value="Кемерово" data-lat="55.354" data-lng="86.089">Кемерово</div>
+        </div>
+      </div>
+      <span class="select-label">Ресторан*</span>
+      <div class="custom-select" id="restaurantSelect">
+        <div class="select-trigger" id="restaurantTrigger">
+          <span>Павловский тракт, 291</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="dropdown-list" id="restaurantDropdown">
+          <div class="dropdown-item-select" data-value="Павловский тракт, 291" data-lat="53.373" data-lng="83.708">Павловский тракт, 291</div>
+          <div class="dropdown-item-select" data-value="пр-т Социалистический, 130" data-lat="53.347" data-lng="83.698">пр-т Социалистический, 130</div>
+          <div class="dropdown-item-select" data-value="ТРЦ Галактика" data-lat="53.382" data-lng="83.756">ТРЦ Галактика</div>
+          <div class="dropdown-item-select" data-value="ул. 65 лет Победы, 15" data-lat="53.326" data-lng="83.801">ул. 65 лет Победы, 15</div>
+          <div class="dropdown-item-select" data-value="ул. Балтийская, 116" data-lat="53.394" data-lng="83.672">ул. Балтийская, 116</div>
+          <div class="dropdown-item-select" data-value="ул. Крупской, 91" data-lat="53.301" data-lng="83.769">ул. Крупской, 91</div>
+          <div class="dropdown-item-select" data-value="ул. Лазурная, 50" data-lat="53.419" data-lng="83.668">ул. Лазурная, 50</div>
+        </div>
+      </div>
+      <div class="map-container" id="locationMap"></div>
+      <div class="divider"></div>
+      <button class="confirm-btn" id="confirmRestaurantBtn">Выбрать</button>
+    </div>
+  </div>
+
+  <!-- Delivery Modal -->
+  <div class="modal-overlay" id="deliveryModal">
+    <div class="modal-container">
+      <h2 class="modal-title">Куда доставить?</h2>
+      <div class="modal-switch" id="modalSwitchDelivery">
+        <span class="modal-switch-option" data-mode="restaurant">В ресторане</span>
+        <span class="modal-switch-option active" data-mode="delivery">Доставка</span>
+      </div>
+      <div class="custom-select" id="deliveryCitySelect">
+        <div class="select-trigger" id="deliveryCityTrigger">
+          <span>Барнаул</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="dropdown-list" id="deliveryCityDropdown">
+          <div class="dropdown-item-select" data-value="Барнаул">Барнаул</div>
+          <div class="dropdown-item-select" data-value="Алейск">Алейск</div>
+          <div class="dropdown-item-select" data-value="Бийск">Бийск</div>
+          <div class="dropdown-item-select" data-value="Горно-Алтайск">Горно-Алтайск</div>
+          <div class="dropdown-item-select" data-value="Заринск">Заринск</div>
+          <div class="dropdown-item-select" data-value="Новосибирск">Новосибирск</div>
+        </div>
+      </div>
+      <input type="text" class="delivery-input" placeholder="Улица, Дом">
+      <div class="delivery-row">
+        <input type="text" class="delivery-input" placeholder="Квартира">
+        <input type="text" class="delivery-input" placeholder="Офис">
+      </div>
+      <div class="delivery-row">
+        <input type="text" class="delivery-input" placeholder="Этаж">
+        <input type="text" class="delivery-input" placeholder="Подъезд">
+      </div>
+      <input type="text" class="delivery-input" placeholder="Домофон">
+      <input type="text" class="delivery-input" placeholder="Комментарий к адресу">
+      <span class="text-xs text-gray-400" style="margin-top: -12px; padding-left: 8px;">Например: домофон не работает</span>
+      <button class="confirm-btn" id="confirmDeliveryBtn">Доставить сюда</button>
+    </div>
+  </div>
+
+  <!-- Cart Panel -->
+  <div class="cart-panel-overlay" id="cartPanelOverlay"></div>
+  <div class="cart-panel" id="cartPanel">
+    <div class="cart-panel-header">
+      <h3 class="cart-panel-title">Корзина</h3>
+      <button class="cart-panel-close" id="cartPanelClose">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="cart-panel-content">
+      <div class="cart-empty-state">
+        <div class="cart-empty-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5">
+            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+          </svg>
+        </div>
+        <p class="cart-empty-text">Корзина пуста!</p>
+        <p class="cart-empty-subtext">Добавьте вкусняшку из меню</p>
+        <div class="cart-divider"></div>
+        <div class="cart-total-row">
+          <span class="cart-total-label">Сумма заказа:</span>
+          <span class="cart-total-price">0 ₽</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="cart-panel-footer">
+      <button class="cart-menu-btn" id="cartMenuBtn">Перейти в меню</button>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    // Common scripts
+    (function() {
+      let currentMode = 'restaurant';
+
+      const serviceSwitch = document.getElementById('serviceSwitch');
+      const openModalBtn = document.getElementById('openModalBtn');
+      const restaurantModal = document.getElementById('restaurantModal');
+      const deliveryModal = document.getElementById('deliveryModal');
+      const modalSwitchRestaurant = document.getElementById('modalSwitchRestaurant');
+      const modalSwitchDelivery = document.getElementById('modalSwitchDelivery');
+      const mobileNavPanel = document.getElementById('mobileNavPanel');
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const mobileNavBackBtn = document.getElementById('mobileNavBackBtn');
+      const mobileNavLogo = document.getElementById('mobileNavLogo');
+      const mobileNavAddress = document.getElementById('mobileNavAddress');
+
+      // Mobile navigation panel
+      function openMobileNav() {
+        mobileNavPanel.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeMobileNav() {
+        mobileNavPanel.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', openMobileNav);
+      }
+
+      if (mobileNavBackBtn) {
+        mobileNavBackBtn.addEventListener('click', closeMobileNav);
+      }
+
+      if (mobileNavLogo) {
+        mobileNavLogo.addEventListener('click', (e) => {
+          e.preventDefault();
+          closeMobileNav();
+          window.location.href = '/';
+        });
+      }
+
+      // При нажатии на адрес в мобильном меню - закрываем меню и открываем модальное окно
+      if (mobileNavAddress) {
+        mobileNavAddress.addEventListener('click', () => {
+          closeMobileNav();
+          // Небольшая задержка для плавного закрытия меню перед открытием модалки
+          setTimeout(() => {
+            window.openModal();
+          }, 300);
+        });
+      }
+
+      window.setMode = function(mode) {
+        currentMode = mode;
+        if (serviceSwitch) {
+          serviceSwitch.querySelectorAll('.switch-option').forEach(o => {
+            o.classList.toggle('active', o.dataset.mode === mode);
+          });
+        }
+        [modalSwitchRestaurant, modalSwitchDelivery].forEach(sw => {
+          if (sw) {
+            sw.querySelectorAll('.modal-switch-option').forEach(o => {
+              o.classList.toggle('active', o.dataset.mode === mode);
+            });
+          }
+        });
+        window.updateOpenModalBtnText();
+      }
+
+      window.updateOpenModalBtnText = function() {
+        if (currentMode === 'restaurant') {
+          const city = document.getElementById('cityTrigger')?.querySelector('span')?.textContent || 'Барнаул';
+          const rest = document.getElementById('restaurantTrigger')?.querySelector('span')?.textContent || 'Павловский тракт, 291';
+          openModalBtn.textContent = city + ' ' + rest;
+        } else {
+          const city = document.getElementById('deliveryCityTrigger')?.querySelector('span')?.textContent || 'Барнаул';
+          openModalBtn.textContent = ' Доставка • ' + city;
+        }
+      }
+
+      window.openModal = function() {
+        if (currentMode === 'restaurant') {
+          restaurantModal.classList.add('open');
+          deliveryModal.classList.remove('open');
+          if (typeof initLocationMap === 'function') {
+            if (!window._locationMap) initLocationMap();
+            else setTimeout(() => window._locationMap.invalidateSize(), 100);
+          }
+        } else {
+          deliveryModal.classList.add('open');
+          restaurantModal.classList.remove('open');
+        }
+      }
+
+      window.closeAllModals = function() {
+        restaurantModal.classList.remove('open');
+        deliveryModal.classList.remove('open');
+      }
+
+      function switchToRestaurantModal() {
+        deliveryModal.classList.remove('open');
+        restaurantModal.classList.add('open');
+        if (typeof initLocationMap === 'function') {
+          if (!window._locationMap) initLocationMap();
+          else setTimeout(() => window._locationMap.invalidateSize(), 100);
+        }
+      }
+
+      function switchToDeliveryModal() {
+        restaurantModal.classList.remove('open');
+        deliveryModal.classList.add('open');
+      }
+
+      if (serviceSwitch) {
+        serviceSwitch.addEventListener('click', e => {
+          const opt = e.target.closest('.switch-option');
+          if (!opt) return;
+          window.setMode(opt.dataset.mode);
+        });
+      }
+
+      openModalBtn.addEventListener('click', window.openModal);
+
+      if (modalSwitchRestaurant) {
+        modalSwitchRestaurant.addEventListener('click', e => {
+          const opt = e.target.closest('.modal-switch-option');
+          if (!opt) return;
+          const mode = opt.dataset.mode;
+          window.setMode(mode);
+          if (mode === 'delivery') switchToDeliveryModal();
+        });
+      }
+
+      if (modalSwitchDelivery) {
+        modalSwitchDelivery.addEventListener('click', e => {
+          const opt = e.target.closest('.modal-switch-option');
+          if (!opt) return;
+          const mode = opt.dataset.mode;
+          window.setMode(mode);
+          if (mode === 'restaurant') switchToRestaurantModal();
+        });
+      }
+
+      [restaurantModal, deliveryModal].forEach(modal => {
+        modal.addEventListener('click', e => {
+          if (e.target === modal) window.closeAllModals();
+        });
+      });
+
+      document.getElementById('confirmRestaurantBtn').addEventListener('click', () => {
+        window.updateOpenModalBtnText();
+        window.closeAllModals();
+      });
+
+      document.getElementById('confirmDeliveryBtn').addEventListener('click', () => {
+        window.updateOpenModalBtnText();
+        window.closeAllModals();
+      });
+
+      // More dropdown
+      const moreBtn = document.getElementById('moreBtn');
+      const dropdownMenu = document.getElementById('dropdownMenu');
+      if (moreBtn && dropdownMenu) {
+        const toggleDropdown = (e) => { e.stopPropagation(); dropdownMenu.classList.toggle('open'); };
+        const closeDropdown = () => dropdownMenu.classList.remove('open');
+        moreBtn.addEventListener('click', toggleDropdown);
+        dropdownMenu.addEventListener('click', e => { e.stopPropagation(); closeDropdown(); });
+        document.addEventListener('click', e => { if (!moreBtn.contains(e.target) && !dropdownMenu.contains(e.target)) closeDropdown(); });
+      }
+
+      // Phone dropdown
+      const phoneBtn = document.getElementById('mobilePhoneBtn');
+      const phoneDropdown = document.getElementById('phoneDropdown');
+      if (phoneBtn && phoneDropdown) {
+        const togglePhone = (e) => { e.stopPropagation(); phoneDropdown.classList.toggle('open'); };
+        const closePhone = () => phoneDropdown.classList.remove('open');
+        phoneBtn.addEventListener('click', togglePhone);
+        phoneDropdown.addEventListener('click', e => e.stopPropagation());
+        document.addEventListener('click', e => { if (!phoneBtn.contains(e.target) && !phoneDropdown.contains(e.target)) closePhone(); });
+      }
+
+      // Categories
+      const categoryList = document.getElementById('categoryList');
+        if (categoryList) {
+          // Функция для установки активной категории по data-category
+          window.setActiveCategory = function(category) {
+            if (!categoryList) return;
+            categoryList.querySelectorAll('.category-item').forEach(el => {
+              if (el.dataset.category === category) {
+                el.classList.add('active-category');
+              } else {
+                el.classList.remove('active-category');
+              }
+            });
+          }
+
+          // Обработчик клика по категориям (навигация)
+          categoryList.addEventListener('click', e => {
+            const item = e.target.closest('.category-item');
+            if (!item) return;
+            const category = item.dataset.category;
+            
+            // Навигация по клику
+            const routes = {
+              'combo': '/menu/combo',
+              'shawarma': '/menu/shawarma',
+              'pizza': '/menu/pizza',
+              'fries': '/menu/fries',
+              'wok': '/menu/wok',
+              'simple': '/menu/simple',
+              'rolls': '/menu/rolls',
+              'drinks': '/menu/drinks'
+            };
+            
+            if (routes[category]) {
+              window.location.href = routes[category];
+            }
+          });
+        }
+
+      // Footer accordion
+      document.querySelectorAll('.footer-accordion-header').forEach(header => {
+        header.addEventListener('click', function() {
+          const content = document.querySelector(`[data-content="${this.dataset.section}"]`);
+          const arrow = this.querySelector('.arrow');
+          const isOpen = content.classList.contains('open');
+          document.querySelectorAll('.footer-accordion-content').forEach(c => c.classList.remove('open'));
+          document.querySelectorAll('.footer-accordion-header .arrow').forEach(a => a.classList.remove('open'));
+          if (!isOpen) {
+            content.classList.add('open');
+            arrow.classList.add('open');
+          }
+        });
+      });
+
+      // Modal select setup
+      window.setupSelect = function(triggerId, dropdownId, onChange) {
+        const trigger = document.getElementById(triggerId);
+        const dropdown = document.getElementById(dropdownId);
+        if (!trigger || !dropdown) return;
+        trigger.addEventListener('click', e => { e.stopPropagation(); dropdown.classList.toggle('open'); });
+        dropdown.addEventListener('click', e => {
+          const item = e.target.closest('.dropdown-item-select');
+          if (item) {
+            trigger.querySelector('span').textContent = item.dataset.value;
+            dropdown.classList.remove('open');
+            if (onChange) onChange(item);
+          }
+        });
+        document.addEventListener('click', e => {
+          if (!trigger.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.remove('open');
+        });
+      }
+
+      // Location map initialization
+      const modalRestaurants = [
+        { name: "Павловский тракт, 291", lat: 53.373, lng: 83.708 },
+        { name: "пр-т Социалистический, 130", lat: 53.347, lng: 83.698 },
+        { name: "ТРЦ Галактика", lat: 53.382, lng: 83.756 },
+        { name: "ул. 65 лет Победы, 15", lat: 53.326, lng: 83.801 },
+        { name: "ул. Балтийская, 116", lat: 53.394, lng: 83.672 },
+        { name: "ул. Крупской, 91", lat: 53.301, lng: 83.769 },
+        { name: "ул. Лазурная, 50", lat: 53.419, lng: 83.668 }
+      ];
+
+      window.initLocationMap = function() {
+        if (window._locationMap) { window._locationMap.remove(); window._locationMap = null; }
+        const mapEl = document.getElementById('locationMap');
+        if (!mapEl) return;
+        window._locationMap = L.map('locationMap', { center: [53.373, 83.708], zoom: 13, attributionControl: false, zoomControl: true });
+        L.tileLayer('https://tile2.maps.2gis.com/tiles?x={x}&y={y}&z={z}', {
+          attribution: '© 2ГИС', subdomains: ['01', '02', '03', '04'], maxZoom: 19
+        }).addTo(window._locationMap);
+        
+        const icon = L.divIcon({
+          className: 'custom-div-icon',
+          html: '<div style="background-color: #f15a24; width: 14px; height: 14px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4);"></div>',
+          iconSize: [20, 20],
+          iconAnchor: [10, 10],
+          popupAnchor: [0, -10]
+        });
+        
+        modalRestaurants.forEach(r => {
+          L.marker([r.lat, r.lng], { icon }).bindPopup(`<b>Грильница</b><br>${r.name}`).addTo(window._locationMap);
+        });
+        
+        setTimeout(() => window._locationMap.invalidateSize(), 200);
+      }
+
+      window.focusOnRestaurant = function(name) {
+        const found = modalRestaurants.find(r => r.name === name);
+        if (found && window._locationMap) window._locationMap.setView([found.lat, found.lng], 15);
+      }
+
+      window.setupSelect('cityTrigger', 'cityDropdown', item => {
+        if (window._locationMap) { const lat = +item.dataset.lat, lng = +item.dataset.lng; if (!isNaN(lat) && !isNaN(lng)) window._locationMap.setView([lat, lng], 11); }
+      });
+
+      window.setupSelect('restaurantTrigger', 'restaurantDropdown', item => {
+        window.focusOnRestaurant(item.dataset.value);
+      });
+
+      window.setupSelect('deliveryCityTrigger', 'deliveryCityDropdown');
+
+      // Cart panel
+      const cartPanel = document.getElementById('cartPanel');
+      const cartPanelOverlay = document.getElementById('cartPanelOverlay');
+      const cartPanelClose = document.getElementById('cartPanelClose');
+      const cartMenuBtn = document.getElementById('cartMenuBtn');
+      const cartBtns = document.querySelectorAll('.cart-btn');
+      const mobileCartBtn = document.getElementById('mobileCartBtn');
+
+      function openCartPanel() {
+        cartPanel.classList.add('open');
+        cartPanelOverlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeCartPanel() {
+        cartPanel.classList.remove('open');
+        cartPanelOverlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      cartBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openCartPanel();
+        });
+      });
+
+      if (mobileCartBtn) {
+        mobileCartBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openCartPanel();
+        });
+      }
+
+      cartPanelClose.addEventListener('click', closeCartPanel);
+      cartPanelOverlay.addEventListener('click', closeCartPanel);
+
+      cartMenuBtn.addEventListener('click', () => {
+        closeCartPanel();
+        window.location.href = 'index.html';
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && cartPanel.classList.contains('open')) {
+          closeCartPanel();
+        }
+      });
+    })();
+  </script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>
