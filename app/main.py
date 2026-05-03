@@ -8,11 +8,11 @@ app = FastAPI()
 
 
 # Подключаем папку с шаблонами
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory="app/frontend/templates")
 
 # Подключаем статические файлы
 if os.path.exists("src"):
-    app.mount("app/src", StaticFiles(directory="src"), name="src")
+    app.mount("app/frontend/src", StaticFiles(directory="src"), name="src")
 
 
 @app.get("/", response_class=HTMLResponse)
