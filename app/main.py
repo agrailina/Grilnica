@@ -6,19 +6,14 @@ import os
 
 app = FastAPI()
 
-# Проверяем, что папка templates существует
-if not os.path.exists("templates"):
-    os.makedirs("templates")
-    print("Создана папка templates")
 
 # Подключаем папку с шаблонами
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="app/templates")
 
 # Подключаем статические файлы
 if os.path.exists("src"):
-    app.mount("/src", StaticFiles(directory="src"), name="src")
-else:
-    print("ВНИМАНИЕ: Папка src не найдена!")
+    app.mount("app/src", StaticFiles(directory="src"), name="src")
+
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
@@ -55,17 +50,6 @@ async def profile(request: Request):
 @app.get("/basket", response_class=HTMLResponse)
 async def basket(request: Request):
     return templates.TemplateResponse("basket.html", {"request": request})
-
-# Для отладки - проверка содержимого файла
-@app.get("/debug/{filename}")
-async def debug_file(filename: str):
-    """Показывает содержимое файла шаблона для отладки"""
-    filepath = f"templates/{filename}"
-    if os.path.exists(filepath):
-        with open(filepath, 'r', encoding='utf-8') as f:
-            content = f.read()
-        return HTMLResponse(f"<pre>{content[:1000]}</pre>")
-    return HTMLResponse(f"Файл {filepath} не найден")
 
 if __name__ == "__main__":
     import uvicorn
