@@ -2,10 +2,43 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from contextlib import asynccontextmanager
+from fastapi.middleware.cors import CORSMiddleware
 import os
 
-app = FastAPI()
+from app.db.base import Base
+from app.db.session import engine
+from app.api.v1.router import api_router
+from app.core.config import settings
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # При запуске
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield
+    # При завершении
+    await engine.dispose()
+
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    description="Grilnica API with PostgreSQL",
+    version="1.0.0",
+    lifespan=lifespan,
+    docs_url="/docs" if settings.DEBUG else None, 
+    redoc_url=None,  
+)
+
+# CORS
+if settings.BACKEND_CORS_ORIGINS:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.BACKEND_CORS_ORIGINS,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 # Подключаем папку с шаблонами
 templates = Jinja2Templates(directory="app/frontend/templates")
@@ -50,6 +83,7 @@ async def profile(request: Request):
 @app.get("/basket", response_class=HTMLResponse)
 async def basket(request: Request):
     return templates.TemplateResponse("basket.html", {"request": request})
+
 
 if __name__ == "__main__":
     import uvicorn
