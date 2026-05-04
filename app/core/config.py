@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     # PostgreSQL
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str 
-    POSTGRES_HOST: str = "localhost"
+    POSTGRES_HOST: str = "db"
     POSTGRES_PORT: int = 5432
     POSTGRES_DB: str
     

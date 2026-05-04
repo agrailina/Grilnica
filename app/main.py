@@ -4,30 +4,22 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
-import os
+from pathlib import Path
 
-from app.db.base import Base
-from app.db.session import engine
-from app.api.v1.router import api_router
 from app.core.config import settings
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # При запуске
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
     yield
-    # При завершении
-    await engine.dispose()
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description="Grilnica API with PostgreSQL",
     version="1.0.0",
     lifespan=lifespan,
-    docs_url="/docs" if settings.DEBUG else None, 
-    redoc_url=None,  
+    docs_url="/docs" if settings.DEBUG else None,
+    redoc_url=None,
 )
 
 # CORS
@@ -40,51 +32,63 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_headers=["*"],
     )
 
-# Подключаем папку с шаблонами
-templates = Jinja2Templates(directory="app/frontend/templates")
+# Пути
+BASE_DIR = Path(__file__).resolve().parent.parent
+TEMPLATES_DIR = BASE_DIR / "app" / "frontend" / "templates"
+STATIC_DIR = BASE_DIR / "app" / "frontend" / "src"
 
-# Подключаем статические файлы
-if os.path.exists("src"):
-    app.mount("app/frontend/src", StaticFiles(directory="src"), name="src")
+templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
+
+# Статические файлы
+if STATIC_DIR.exists():
+    app.mount("/src", StaticFiles(directory=str(STATIC_DIR)), name="src")
 
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(request, "index.html")
+
 
 @app.get("/actions", response_class=HTMLResponse)
 async def actions(request: Request):
-    return templates.TemplateResponse("actions.html", {"request": request})
+    return templates.TemplateResponse(request, "actions.html")
+
 
 @app.get("/qual", response_class=HTMLResponse)
 async def qual(request: Request):
-    return templates.TemplateResponse("qual.html", {"request": request})
+    return templates.TemplateResponse(request, "qual.html")
+
 
 @app.get("/restaurants", response_class=HTMLResponse)
 async def restaurants(request: Request):
-    return templates.TemplateResponse("restorans.html", {"request": request})
+    return templates.TemplateResponse(request, "restorans.html")
+
 
 @app.get("/menu/combo", response_class=HTMLResponse)
 async def menu_combo(request: Request):
-    return templates.TemplateResponse("combo.html", {"request": request})
+    return templates.TemplateResponse(request, "combo.html")
+
 
 @app.get("/menu/combo/combo-balls-foodattack", response_class=HTMLResponse)
 async def menu_combo_balls_foodattack(request: Request):
-    return templates.TemplateResponse("product-detail.html", {"request": request})
+    return templates.TemplateResponse(request, "product-detail.html")
+
 
 @app.get("/login", response_class=HTMLResponse)
 async def login(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+    return templates.TemplateResponse(request, "login.html")
+
 
 @app.get("/profile", response_class=HTMLResponse)
 async def profile(request: Request):
-    return templates.TemplateResponse("profile.html", {"request": request})
+    return templates.TemplateResponse(request, "profile.html")
+
 
 @app.get("/basket", response_class=HTMLResponse)
 async def basket(request: Request):
-    return templates.TemplateResponse("basket.html", {"request": request})
+    return templates.TemplateResponse(request, "basket.html")
 
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
