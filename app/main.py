@@ -48,7 +48,7 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 # Подключаем API роутер
-app.include_router(api_router)
+app.include_router(api_router, prefix="/api/v1")
 
 # Пути
 BASE_DIR = Path(__file__).resolve().parent.parent

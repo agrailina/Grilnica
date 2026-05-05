@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import JSONResponse
 from app.schemas.user import UserCreate, UserUpdate, UserResponse
 from app.services.auth import AuthService, get_auth_service
-from app.api.deps import require_user
+from app.api.deps import require_user, get_optional_user
 from app.models.user import User
+from typing import Optional
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -31,8 +32,15 @@ async def logout(request: Request):
 
 
 @router.get("/me", response_model=UserResponse)
-async def get_me(current_user: User = Depends(require_user)):
+async def get_me(
+    current_user: Optional[User] = Depends(get_optional_user)
+):
     """Получить данные текущего пользователя"""
+    if not current_user:
+        return JSONResponse(
+            status_code=200,
+            content={"authenticated": False, "user": None}
+        )
     return UserResponse.from_orm(current_user)
 
 
@@ -53,8 +61,15 @@ async def update_me(
 
 
 @router.get("/check")
-async def check_auth(current_user: User = Depends(require_user)):
+async def check_auth(
+    current_user: Optional[User] = Depends(get_optional_user)
+):
     """Проверка авторизации (для фронтенда)"""
+    if not current_user:
+        return {
+            "authenticated": False,
+            "user": None
+        }
     return {
         "authenticated": True,
         "user": UserResponse.from_orm(current_user).dict()

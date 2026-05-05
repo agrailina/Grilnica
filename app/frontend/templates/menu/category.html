@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}Грильница • {{ category.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .menu-section {
+        width: 100%;
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 clamp(16px, calc((100vw - 320px) * 0.054 + 16px), 64px);
+    }
+
+    .menu-title-wrapper {
+        margin-bottom: 24px;
+        text-align: center;
+    }
+
+    .menu-title-wrapper h1 {
+        font-family: 'Gilroy-Extrabold', sans-serif !important;
+        text-align: center !important;
+        font-size: clamp(24px, 4vw, 28px) !important;
+        color: rgb(71, 77, 88) !important;
+        font-weight: 700 !important;
+        line-height: 32px;
+        letter-spacing: -0.3px;
+    }
+
+    .category-description {
+        text-align: center;
+        color: #697384;
+        font-size: 16px;
+        margin-top: 8px;
+        margin-bottom: 32px;
+    }
+
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        padding-bottom: 48px;
+    }
+
+    .product-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+        border: 1px solid #f3f4f6;
+        overflow: hidden;
+        transition: all 0.25s ease;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        cursor: pointer;
+    }
+
+    .product-card:hover {
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        border-color: #f15a24;
+        transform: translateY(-4px);
+    }
+
+    .product-image {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        max-height: 200px;
+        object-fit: cover;
+        display: block;
+        background: #f9fafb;
+    }
+
+    .product-content {
+        padding: 18px 22px 22px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+
+    .product-name {
+        font-weight: 700;
+        font-size: 17px;
+        color: #1f2937;
+        line-height: 1.3;
+        margin-bottom: 8px;
+    }
+
+    .product-description {
+        font-size: 14px;
+        color: #697384;
+        line-height: 1.6;
+        flex: 1;
+        margin-bottom: 18px;
+        letter-spacing: 0.1px;
+    }
+
+    .product-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: auto;
+    }
+
+    .product-price {
+        font-weight: 800;
+        font-size: 19px;
+        color: #1f2937;
+        letter-spacing: -0.2px;
+    }
+
+    .add-to-cart-btn {
+        background: #f15a24;
+        border: none;
+        border-radius: 9999px;
+        padding: 10px 22px;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.2s;
+        white-space: nowrap;
+        font-family: 'Gilroy', sans-serif;
+        letter-spacing: 0.2px;
+    }
+
+    .add-to-cart-btn:hover {
+        background: #d94d1a;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #697384;
+    }
+
+    .empty-state h3 {
+        font-size: 20px;
+        margin-bottom: 12px;
+        color: #1f2937;
+    }
+
+    @media (max-width: 1100px) {
+        .products-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .product-image {
+            max-height: 180px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .products-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+        .product-image {
+            max-height: 160px;
+        }
+    }
+
+    @media (max-width: 500px) {
+        .products-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        .product-image {
+            max-height: 220px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="menu-section">
+    <div class="menu-title-wrapper">
+        <h1>{{ category.name }}</h1>
+        {% if category.description %}
+        <p class="category-description">{{ category.description }}</p>
+        {% endif %}
+    </div>
+
+    {% if products %}
+    <div class="products-grid">
+        {% for product in products %}
+        <div class="product-card" onclick="window.location.href='/product/{{ product.id }}'">
+            <img src="{{ product.image or '/static/images/placeholder.png' }}" 
+                 alt="{{ product.name }}" 
+                 class="product-image" 
+                 onerror="this.src='/static/images/placeholder.png'">
+            <div class="product-content">
+                <div class="product-name">{{ product.name }}</div>
+                <div class="product-description">{{ product.description or '' }}</div>
+                <div class="product-footer">
+                    <span class="product-price">{{ product.price }} ₽</span>
+                    <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('{{ product.id }}', '{{ product.name }}', '{{ product.price }}')">
+                        В корзину
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <h3>Товары пока не добавлены</h3>
+        <p>В этой категории скоро появятся вкусные блюда</p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function addToCart(productId, productName, productPrice) {
+        // Здесь должна быть логика добавления в корзину
+        alert(`${productName} добавлен в корзину за ${productPrice} ₽`);
+        
+        // Если есть глобальная функция открытия корзины
+        if (typeof openCartPanel === 'function') {
+            openCartPanel();
+        }
+    }
+    
+    // Активируем категорию в навигации
+    if (typeof window.setActiveCategory === 'function') {
+        window.setActiveCategory('{{ category.slug }}');
+    }
+</script>
+{% endblock %}
