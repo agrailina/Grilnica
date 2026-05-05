@@ -19,6 +19,7 @@ class Product(Base):
     
     # Основное
     name: Mapped[str] = mapped_column(String(300), nullable=False, index=True)
+    slug: Mapped[Optional[str]] = mapped_column(String(300), unique=True, nullable=True, index=True)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     
@@ -35,12 +36,8 @@ class Product(Base):
     
     # Связи
     category: Mapped[Optional[Any]] = relationship("Category", back_populates="products")
-    cart_items: Mapped[list[Any]] = relationship(
-        "CartItem", back_populates="product"
-    )
-    order_items: Mapped[list[Any]] = relationship(
-        "OrderItem", back_populates="product"
-    )
+    cart_items: Mapped[list[Any]] = relationship("CartItem", back_populates="product")
+    order_items: Mapped[list[Any]] = relationship("OrderItem", back_populates="product")
     
     def __repr__(self):
         return f"<Product {self.name} - {self.price}₽>"

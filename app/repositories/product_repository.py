@@ -63,7 +63,7 @@ class ProductRepository(BaseRepository[Product]):
             total = count_result.scalar()
             
             # Применяем пагинацию
-            query = query.order_by(Product.name).offset(skip).limit(limit)
+            query = query.order_by(Product.created_at).offset(skip).limit(limit)
             result = await self.session.execute(query)
             products = result.scalars().all()
             

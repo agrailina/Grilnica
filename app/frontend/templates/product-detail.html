@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Грильница • Шары залетают{% endblock %}
+{% block title %}Грильница • Загрузка...{% endblock %}
 
 {% block extra_css %}
+<style>
     .product-detail-section {
       width: 100%;
       max-width: 1200px;
@@ -19,7 +20,7 @@
 
     .product-image-wrapper {
       flex: 0 0 auto;
-      width: clamp(280px, 40vw, 450px);
+      width: clamp(250px, 35vw, 380px);
       border-radius: 28px;
       overflow: hidden;
       background: #fff;
@@ -81,6 +82,7 @@
       font-weight: 600;
       color: #697384;
       transition: color 0.25s ease;
+      text-decoration: none;
     }
 
     .back-row:hover .back-label {
@@ -101,14 +103,12 @@
       font-size: 14px;
       color: #697384;
       line-height: 1.6;
-      letter-spacing: 0.1px;
     }
 
     .product-combo-label {
       font-size: 16px;
       font-weight: 700;
       color: #1f2937;
-      letter-spacing: -0.2px;
     }
 
     .combo-card {
@@ -120,13 +120,7 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      transition: all 0.25s ease;
       max-width: 350px;
-    }
-
-    .combo-card:hover {
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-      border-color: #f15a24;
     }
 
     .combo-mini-image {
@@ -199,10 +193,6 @@
       background: rgba(241, 90, 36, 0.05);
     }
 
-    .quantity-btn:active {
-      transform: scale(0.95);
-    }
-
     .quantity-value {
       font-size: 20px;
       font-weight: 700;
@@ -233,8 +223,28 @@
       background: #d94d1a;
     }
 
-    .add-to-cart-price-btn:active {
-      transform: scale(0.98);
+    .loading-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #697384;
+      font-size: 18px;
+    }
+
+    .error-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #ef4444;
+    }
+
+    .error-state h3 {
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .error-state a {
+      color: #f15a24;
+      text-decoration: none;
+      font-weight: 600;
     }
 
     @media (max-width: 860px) {
@@ -242,23 +252,13 @@
         flex-direction: column;
         align-items: center;
       }
-
       .product-image-wrapper {
         width: 100%;
         max-width: 400px;
       }
-
       .product-info {
         max-width: 100%;
         width: 100%;
-      }
-
-      .product-detail-section {
-        padding-top: 24px;
-      }
-
-      .combo-card {
-        max-width: 100%;
       }
     }
 
@@ -266,134 +266,151 @@
       .product-detail-section {
         padding: 20px clamp(12px, 4vw, 32px) 40px;
       }
-
-      .product-image-wrapper {
-        max-width: 350px;
-      }
-
       .product-detail-name {
         font-size: 24px;
       }
-
       .combo-card {
-        padding: 10px 12px;
-        gap: 10px;
         max-width: 100%;
       }
-
-      .combo-mini-image {
-        width: 48px;
-        height: 48px;
-      }
-
-      .quantity-btn {
-        width: 36px;
-        height: 36px;
-        font-size: 18px;
-      }
-
-      .add-to-cart-price-btn {
-        padding: 12px 20px;
-        font-size: 15px;
-      }
     }
+</style>
 {% endblock %}
 
 {% block content %}
-    <section class="product-detail-section">
-      <div class="product-detail-container">
-        <div class="product-image-wrapper">
-          <img src="/src/combo/elem_1.png" alt="Шары залетают" class="product-detail-image" onerror="this.style.background='#f9fafb'; this.style.minHeight='300px'">
-        </div>
-
-        <div class="product-info">
-          <div class="back-row">
-            <a href="/menu/combo" class="back-button" aria-label="Назад к комбо">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 12H5M12 19l-7-7 7-7"/>
-              </svg>
-            </a>
-            <a href="/menu/combo" class="back-label">Комбо</a>
-          </div>
-
-          <h1 class="product-detail-name">Шары залетают</h1>
-
-          <p class="product-detail-description">
-            Идеально залетают под киношку и на вечеринке! Сочные мясные шарики классические 5 шт., с сыром 5 шт., пикантные Том Ям 5 шт., нежные мини-беляшки 5 шт., а ещё сырные шарики с халапенью 4 шт. и с беконом 4 шт. Шары залетают в Грильнице!
-          </p>
-
-          <p class="product-combo-label">Комбо "Шары залетают"</p>
-
-          <div class="combo-card">
-            <img src="/src/combo/elem_1.png" alt="Шары залетают" class="combo-mini-image" onerror="this.style.background='#f9fafb'">
-            <div class="combo-card-info">
-              <div class="combo-card-name">Шары залетают</div>
-              <div class="combo-card-price">729 ₽</div>
-            </div>
-          </div>
-
-          <div class="divider-line"></div>
-
-          <div class="quantity-row">
-            <div class="quantity-control">
-              <button class="quantity-btn" id="decrementBtn" aria-label="Уменьшить количество">−</button>
-              <span class="quantity-value" id="quantityValue">1</span>
-              <button class="quantity-btn" id="incrementBtn" aria-label="Увеличить количество">+</button>
-            </div>
-            <button class="add-to-cart-price-btn" id="addToCartBtn">
-              <span id="btnPrice">729 ₽</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
+<section class="product-detail-section">
+  <div class="product-detail-container" id="productContainer">
+    <div class="loading-state">Загрузка...</div>
+  </div>
+</section>
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
-  (function() {
-    const basePrice = 729;
-    let quantity = 1;
-    const quantityValueEl = document.getElementById('quantityValue');
-    const btnPriceEl = document.getElementById('btnPrice');
-    const decrementBtn = document.getElementById('decrementBtn');
-    const incrementBtn = document.getElementById('incrementBtn');
-    const addToCartBtn = document.getElementById('addToCartBtn');
+(async function() {
+  const container = document.getElementById('productContainer');
+  
+  // Получаем slug или id из URL
+  const path = window.location.pathname;
+  const parts = path.split('/').filter(p => p);
+  const lastPart = parts[parts.length - 1];
+  
+  // Определяем тип параметра: UUID или slug
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(lastPart);
+  
+  // Выбираем правильный API
+  const apiUrl = isUuid 
+    ? `/api/v1/products/${lastPart}`
+    : `/api/v1/product-by-slug/${lastPart}`;
 
-    function updateUI() {
-      quantityValueEl.textContent = quantity;
-      const total = basePrice * quantity;
-      btnPriceEl.textContent = total + ' ₽';
+  try {
+    const response = await fetch(apiUrl);
+    
+    if (!response.ok) {
+      throw new Error('Товар не найден');
     }
 
-    decrementBtn.addEventListener('click', () => {
-      if (quantity > 1) {
-        quantity--;
-        updateUI();
-      }
+    const product = await response.json();
+    
+    // Обновляем заголовок страницы
+    document.title = `Грильница • ${product.name}`;
+    
+    // Данные товара
+    const categoryName = product.category?.name || 'Комбо';
+    const categorySlug = product.category?.slug || 'combo';
+    const price = parseFloat(product.price).toFixed(2);
+    const image = product.image || '/static/placeholder.png';
+    const name = product.name || 'Без названия';
+    const description = product.description || '';
+
+    // Рендерим страницу с реальными данными
+    container.innerHTML = `
+      <div class="product-image-wrapper">
+        <img src="${image}" 
+             alt="${name}" 
+             class="product-detail-image" 
+             onerror="this.src='/static/placeholder.png'">
+      </div>
+
+      <div class="product-info">
+        <div class="back-row">
+          <a href="/menu/${categorySlug}" class="back-button" aria-label="Назад">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+          </a>
+          <a href="/menu/${categorySlug}" class="back-label">← ${categoryName}</a>
+        </div>
+
+        <h1 class="product-detail-name">${name}</h1>
+        <p class="product-detail-description">${description}</p>
+        <p class="product-combo-label">Комбо "${name}"</p>
+
+        <div class="combo-card">
+          <img src="${image}" 
+               alt="${name}" 
+               class="combo-mini-image" 
+               onerror="this.style.background='#f9fafb'">
+          <div class="combo-card-info">
+            <div class="combo-card-name">${name}</div>
+            <div class="combo-card-price">${price} ₽</div>
+          </div>
+        </div>
+
+        <div class="divider-line"></div>
+
+        <div class="quantity-row">
+          <div class="quantity-control">
+            <button class="quantity-btn" id="decrementBtn">−</button>
+            <span class="quantity-value" id="quantityValue">1</span>
+            <button class="quantity-btn" id="incrementBtn">+</button>
+          </div>
+          <button class="add-to-cart-price-btn" id="addToCartBtn">
+            <span id="btnPrice">${price} ₽</span>
+          </button>
+        </div>
+      </div>
+    `;
+
+    // Логика количества
+    let quantity = 1;
+    const basePrice = parseFloat(product.price);
+
+    function updatePrice() {
+      document.getElementById('quantityValue').textContent = quantity;
+      document.getElementById('btnPrice').textContent = (basePrice * quantity).toFixed(2) + ' ₽';
+    }
+
+    document.getElementById('decrementBtn').addEventListener('click', () => {
+      if (quantity > 1) { quantity--; updatePrice(); }
     });
 
-    incrementBtn.addEventListener('click', () => {
-      quantity++;
-      updateUI();
+    document.getElementById('incrementBtn').addEventListener('click', () => {
+      if (quantity < 99) { quantity++; updatePrice(); }
     });
 
-    addToCartBtn.addEventListener('click', () => {
-      const total = basePrice * quantity;
-      alert('Товар "Шары залетают" (' + quantity + ' шт.) добавлен в корзину за ' + total + ' ₽');
+    document.getElementById('addToCartBtn').addEventListener('click', () => {
+      const total = (basePrice * quantity).toFixed(2);
+      alert(`${name} (${quantity} шт.) добавлен в корзину за ${total} ₽`);
       
-      // Опционально открыть панель корзины
-      if (typeof openCartPanel === 'function' && window.innerWidth >= 990) {
+      if (typeof openCartPanel === 'function') {
         openCartPanel();
       }
     });
 
-    // Активируем категорию "Комбо" в навигации
+    // Активируем категорию в навигации
     if (typeof window.setActiveCategory === 'function') {
-      window.setActiveCategory('combo');
+      window.setActiveCategory(categorySlug);
     }
 
-    updateUI();
-  })();
+  } catch (error) {
+    console.error('Ошибка:', error);
+    container.innerHTML = `
+      <div class="error-state">
+        <h3>${error.message}</h3>
+        <p>Товар не найден или произошла ошибка загрузки</p>
+        <a href="/menu/combo">Вернуться в Комбо</a>
+      </div>`;
+  }
+})();
 </script>
 {% endblock %}

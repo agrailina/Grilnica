@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
 from uuid import UUID
@@ -8,6 +8,7 @@ from decimal import Decimal
 class ProductBase(BaseModel):
     category_id: Optional[UUID] = None
     name: str = Field(..., min_length=1, max_length=300)
+    slug: Optional[str] = Field(None, max_length=300)
     description: Optional[str] = None
     price: Decimal = Field(..., gt=0)
     image: Optional[str] = Field(None, max_length=500)
@@ -22,6 +23,7 @@ class ProductCreate(ProductBase):
 class ProductUpdate(BaseModel):
     category_id: Optional[UUID] = None
     name: Optional[str] = Field(None, min_length=1, max_length=300)
+    slug: Optional[str] = Field(None, max_length=300)
     description: Optional[str] = None
     price: Optional[Decimal] = Field(None, gt=0)
     image: Optional[str] = Field(None, max_length=500)

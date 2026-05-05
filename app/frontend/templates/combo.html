@@ -195,14 +195,13 @@
     // Загружаем товары через API
     async function loadComboProducts() {
       try {
-        // Используем прямой эндпоинт для товаров по slug категории
-        const productsResponse = await fetch('/api/v1/combo-products');
+        const response = await fetch('/api/v1/combo-products');
         
-        if (!productsResponse.ok) {
+        if (!response.ok) {
           throw new Error('Ошибка загрузки товаров');
         }
         
-        const data = await productsResponse.json();
+        const data = await response.json();
         const products = data.products;
         
         if (!products || products.length === 0) {
@@ -216,11 +215,11 @@
         
         // Рендерим карточки
         grid.innerHTML = products.map((product, i) => `
-          <div class="product-card" data-product-id="${product.id}" data-index="${i}">
-            <img src="${product.image || '/static/images/placeholder.png'}" 
+          <div class="product-card" data-product-slug="${product.slug || ''}" data-product-id="${product.id}">
+            <img src="${product.image || '/static/placeholder.png'}" 
                  alt="${product.name}" 
                  class="product-image" 
-                 onerror="this.style.background='#f3f4f6'; this.style.minHeight='150px'">
+                 onerror="this.style.background='#f3f4f6'">
             <div class="product-content">
               <div class="product-name">${product.name}</div>
               <div class="product-description">${product.description || ''}</div>
@@ -247,26 +246,28 @@
       }
     }
 
-    // Загружаем товары при загрузке страницы
+    // Загружаем товары
     loadComboProducts();
 
-    // Обработчик кликов по карточкам
+    // Обработчик кликов по карточкам — переход по slug
     grid.addEventListener('click', (e) => {
       const card = e.target.closest('.product-card');
       if (!card) return;
       
-      const productId = card.dataset.productId;
-      if (productId) {
-        window.location.href = `/product/${productId}`;
+      const slug = card.dataset.productSlug;
+      const id = card.dataset.productId;
+      
+      if (slug) {
+        window.location.href = `/menu/combo/${slug}`;
+      } else if (id) {
+        window.location.href = `/product/${id}`;
       }
     });
 
     // Функция добавления в корзину
     window.addToCart = function(productId, productName, productPrice) {
-      // Здесь будет логика добавления в корзину
       alert(`${productName} добавлен в корзину за ${productPrice} ₽`);
       
-      // Если есть функция открытия корзины
       if (typeof openCartPanel === 'function') {
         openCartPanel();
       }

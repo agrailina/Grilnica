@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Грильница • {{ product.name|default("Товар") }}{% endblock %}
+{% block title %}Грильница • Загрузка...{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -19,22 +19,22 @@
     }
 
     .product-image-wrapper {
-      flex: 0 0 auto;
-      width: clamp(280px, 40vw, 450px);
-      border-radius: 28px;
-      overflow: hidden;
-      background: #fff;
-      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.05);
-      border: 1px solid #f3f4f6;
-    }
+        flex: 0 0 auto;
+        width: clamp(250px, 35vw, 380px);  /* Было: clamp(280px, 40vw, 450px) */
+        border-radius: 28px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f3f4f6;
+        }
 
-    .product-detail-image {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      object-fit: contain;
-      display: block;
-      background: #fff;
-    }
+        .product-detail-image {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: contain;
+        display: block;
+        background: #fff;
+        }
 
     .product-info {
       flex: 1;
@@ -223,11 +223,28 @@
       background: #d94d1a;
     }
 
-    .loading {
+    .loading-state {
       text-align: center;
-      padding: 60px;
+      padding: 80px 20px;
       color: #697384;
       font-size: 18px;
+    }
+
+    .error-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #ef4444;
+    }
+
+    .error-state h3 {
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .error-state a {
+      color: #f15a24;
+      text-decoration: none;
+      font-weight: 600;
     }
 
     @media (max-width: 860px) {
@@ -252,6 +269,9 @@
       .product-detail-name {
         font-size: 24px;
       }
+      .combo-card {
+        max-width: 100%;
+      }
     }
 </style>
 {% endblock %}
@@ -259,7 +279,7 @@
 {% block content %}
 <section class="product-detail-section">
   <div class="product-detail-container" id="productContainer">
-    <div class="loading">🔄 Загрузка...</div>
+    <div class="loading-state">🔄 Загрузка...</div>
   </div>
 </section>
 {% endblock %}
@@ -268,16 +288,22 @@
 <script>
 (async function() {
   const container = document.getElementById('productContainer');
-  const productId = window.location.pathname.split('/').pop();
-
-  if (!productId || productId === 'product') {
-    container.innerHTML = '<div class="loading">❌ Товар не найден</div>';
-    return;
-  }
+  
+  // Получаем slug или id из URL
+  const path = window.location.pathname;
+  const parts = path.split('/').filter(p => p);
+  const lastPart = parts[parts.length - 1];
+  
+  // Определяем тип параметра: UUID или slug
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(lastPart);
+  
+  // Выбираем правильный API
+  const apiUrl = isUuid 
+    ? `/api/v1/products/${lastPart}`
+    : `/api/v1/product-by-slug/${lastPart}`;
 
   try {
-    // Загружаем данные товара через API
-    const response = await fetch(`/api/v1/products/${productId}`);
+    const response = await fetch(apiUrl);
     
     if (!response.ok) {
       throw new Error('Товар не найден');
@@ -285,15 +311,24 @@
 
     const product = await response.json();
     
-    // Формируем HTML с данными из API
-    const categorySlug = product.category?.slug || 'combo';
+    // Обновляем заголовок страницы
+    document.title = `Грильница • ${product.name}`;
+    
+    // Данные товара
     const categoryName = product.category?.name || 'Комбо';
-    const price = parseFloat(product.price);
+    const categorySlug = product.category?.slug || 'combo';
+    const price = parseFloat(product.price).toFixed(2);
     const image = product.image || '/static/placeholder.png';
+    const name = product.name || 'Без названия';
+    const description = product.description || '';
 
+    // Рендерим страницу с реальными данными
     container.innerHTML = `
       <div class="product-image-wrapper">
-        <img src="${image}" alt="${product.name}" class="product-detail-image" onerror="this.src='/static/placeholder.png'">
+        <img src="${image}" 
+             alt="${name}" 
+             class="product-detail-image" 
+             onerror="this.src='/static/placeholder.png'">
       </div>
 
       <div class="product-info">
@@ -303,18 +338,21 @@
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
           </a>
-          <a href="/menu/${categorySlug}" class="back-label">${categoryName}</a>
+          <a href="/menu/${categorySlug}" class="back-label">← ${categoryName}</a>
         </div>
 
-        <h1 class="product-detail-name">${product.name}</h1>
-        <p class="product-detail-description">${product.description || ''}</p>
-        <p class="product-combo-label">${product.name}</p>
+        <h1 class="product-detail-name">${name}</h1>
+        <p class="product-detail-description">${description}</p>
+        <p class="product-combo-label">Комбо "${name}"</p>
 
         <div class="combo-card">
-          <img src="${image}" alt="${product.name}" class="combo-mini-image" onerror="this.style.background='#f9fafb'">
+          <img src="${image}" 
+               alt="${name}" 
+               class="combo-mini-image" 
+               onerror="this.style.background='#f9fafb'">
           <div class="combo-card-info">
-            <div class="combo-card-name">${product.name}</div>
-            <div class="combo-card-price" id="cardPrice">${price} ₽</div>
+            <div class="combo-card-name">${name}</div>
+            <div class="combo-card-price">${price} ₽</div>
           </div>
         </div>
 
@@ -335,10 +373,11 @@
 
     // Логика количества
     let quantity = 1;
+    const basePrice = parseFloat(product.price);
 
     function updatePrice() {
       document.getElementById('quantityValue').textContent = quantity;
-      document.getElementById('btnPrice').textContent = (price * quantity) + ' ₽';
+      document.getElementById('btnPrice').textContent = (basePrice * quantity).toFixed(2) + ' ₽';
     }
 
     document.getElementById('decrementBtn').addEventListener('click', () => {
@@ -350,8 +389,9 @@
     });
 
     document.getElementById('addToCartBtn').addEventListener('click', () => {
-      const total = price * quantity;
-      alert(`${product.name} (${quantity} шт.) добавлен в корзину за ${total} ₽`);
+      const total = (basePrice * quantity).toFixed(2);
+      alert(`${name} (${quantity} шт.) добавлен в корзину за ${total} ₽`);
+      
       if (typeof openCartPanel === 'function') {
         openCartPanel();
       }
@@ -363,10 +403,12 @@
     }
 
   } catch (error) {
+    console.error('Ошибка:', error);
     container.innerHTML = `
-      <div class="loading">
+      <div class="error-state">
         <h3>❌ ${error.message}</h3>
-        <a href="/menu/combo" style="color:#f15a24;">← Вернуться в Комбо</a>
+        <p>Товар не найден или произошла ошибка загрузки</p>
+        <a href="/menu/combo">← Вернуться в Комбо</a>
       </div>`;
   }
 })();

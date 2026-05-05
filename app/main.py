@@ -64,25 +64,105 @@ if STATIC_DIR.exists():
 # ========== ПРЯМОЙ ЭНДПОИНТ ДЛЯ КОМБО ==========
 @app.get("/api/v1/combo-products")
 async def get_combo(db: AsyncSession = Depends(get_db)):
+    """Получить товары Комбо в правильном порядке"""
     try:
-        service = ProductService(db)
-        filters = ProductFilterParams(category_slug="combo", is_available=True, limit=50)
-        products, total = await service.get_filtered_products(filters)
+        from sqlalchemy import select
+        from sqlalchemy.orm import selectinload
+        from app.models.product import Product
+        from app.models.category import Category
+        
+        # Прямой SQL-запрос с правильной сортировкой
+        query = (
+            select(Product)
+            .options(selectinload(Product.category))
+            .join(Product.category)
+            .where(Category.slug == "combo")
+            .where(Product.is_active == True)
+            .where(Product.is_available == True)
+            .order_by(Product.created_at.asc())  # Сортировка по дате создания
+            .limit(50)
+        )
+        
+        result = await db.execute(query)
+        products = result.scalars().all()
+        
         return {
             "products": [
                 {
                     "id": str(p.id),
                     "name": p.name,
+                    "slug": p.slug if hasattr(p, 'slug') and p.slug else '',
                     "description": p.description or "",
                     "price": str(p.price),
                     "image": p.image or "",
                 }
                 for p in products
             ],
-            "total": total
+            "total": len(products)
         }
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         return JSONResponse({"error": str(e), "products": [], "total": 0})
+    
+# Добавьте страницу для /menu/combo/{slug}
+@app.get("/menu/combo/{product_slug}", response_class=HTMLResponse)
+async def menu_combo_product(request: Request, product_slug: str):
+    return templates.TemplateResponse(request, "product-detail.html")
+
+
+# Добавьте API для получения товара по slug
+@app.get("/api/v1/product-by-slug/{slug}")
+async def get_product_by_slug(slug: str, db: AsyncSession = Depends(get_db)):
+    """Получить товар по slug"""
+    from sqlalchemy import select
+    from sqlalchemy.orm import selectinload
+    from app.models.product import Product
+    
+    try:
+        # Загружаем товар вместе с категорией
+        query = (
+            select(Product)
+            .options(selectinload(Product.category))
+            .where(Product.slug == slug)
+        )
+        result = await db.execute(query)
+        product = result.scalar_one_or_none()
+        
+        if not product:
+            return JSONResponse({"error": "Товар не найден"}, status_code=404)
+        
+        # Формируем ответ вручную,以避免 ошибок сериализации
+        response_data = {
+            "id": str(product.id),
+            "name": product.name,
+            "slug": product.slug if hasattr(product, 'slug') and product.slug else "",
+            "description": product.description or "",
+            "price": str(product.price),
+            "image": product.image or "",
+            "is_available": product.is_available if hasattr(product, 'is_available') else True,
+        }
+        
+        # Добавляем категорию, если есть
+        if product.category:
+            response_data["category"] = {
+                "id": str(product.category.id),
+                "name": product.category.name,
+                "slug": product.category.slug,
+            }
+        else:
+            response_data["category"] = {
+                "id": None,
+                "name": "Комбо",
+                "slug": "combo",
+            }
+        
+        return response_data
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return JSONResponse({"error": str(e)}, status_code=500)
 
 
 # ========== СТРАНИЦЫ ==========

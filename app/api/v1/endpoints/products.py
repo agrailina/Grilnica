@@ -62,7 +62,7 @@ async def get_products_by_category(
     return ProductListResponse(products=products, total=total)
 
 
-# Этот маршрут должен быть ПОСЛЕДНИМ среди GET!
+
 @router.get("/{product_id}", response_model=ProductDetailResponse)
 async def get_product(
     product_id: UUID,
