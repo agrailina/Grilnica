@@ -48,7 +48,8 @@ async def get_products(
     return ProductListResponse(products=products, total=total)
 
 
-@router.get("/category/{slug}", response_model=ProductListResponse)
+# ВАЖНО: этот маршрут ДОЛЖЕН быть перед /{product_id}!
+@router.get("/by-category/{slug}", response_model=ProductListResponse)
 async def get_products_by_category(
     slug: str,
     skip: int = Query(0, ge=0),
@@ -61,6 +62,7 @@ async def get_products_by_category(
     return ProductListResponse(products=products, total=total)
 
 
+# Этот маршрут должен быть ПОСЛЕДНИМ среди GET!
 @router.get("/{product_id}", response_model=ProductDetailResponse)
 async def get_product(
     product_id: UUID,

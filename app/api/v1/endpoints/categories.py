@@ -1,6 +1,6 @@
 from typing import List
 from uuid import UUID
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_db
@@ -35,17 +35,7 @@ async def get_categories(
     return CategoryListResponse(categories=categories, total=total)
 
 
-@router.get("/{category_id}", response_model=CategoryResponse)
-async def get_category(
-    category_id: UUID,
-    db: AsyncSession = Depends(get_db)
-):
-    """Получить категорию по ID"""
-    service = CategoryService(db)
-    return await service.get_category(category_id)
-
-
-@router.get("/slug/{slug}", response_model=CategoryResponse)
+@router.get("/by-slug/{slug}", response_model=CategoryResponse)
 async def get_category_by_slug(
     slug: str,
     db: AsyncSession = Depends(get_db)
@@ -53,6 +43,21 @@ async def get_category_by_slug(
     """Получить категорию по slug"""
     service = CategoryService(db)
     return await service.get_category_by_slug(slug)
+
+
+@router.get("/{category_id}", response_model=CategoryResponse)
+async def get_category(
+    category_id: UUID,
+    db: AsyncSession = Depends(get_db)
+):
+    """Получить категорию по ID"""
+    service = CategoryService(db)
+    try:
+        return await service.get_category(category_id)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @router.get("/{category_id}/products", response_model=CategoryWithProducts)
