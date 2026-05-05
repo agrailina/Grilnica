@@ -286,7 +286,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding:40px 20px 48px;
+      padding: 40px 20px 48px;
       text-align: center;
       min-height: 140px;
     }
@@ -343,12 +343,32 @@
       cursor: pointer;
       transition: all 0.25s ease;
       font-family: 'Gilroy', sans-serif;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.3s;
     }
 
     .btn-secondary:hover {
       background: #e95d52;
       color: white;
+    }
+
+    .loading-spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #f3f4f6;
+      border-top: 2px solid #e95d52;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-left: 8px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .btn-save.saving .loading-spinner {
+      display: inline-block;
     }
 
     @media (max-width: 860px) {
@@ -441,44 +461,48 @@
             <div class="card-body" id="myDataBody">
               <div class="divider"></div>
               <div class="card-content-inner">
-                <form class="profile-form" id="myDataForm">
+                <form class="profile-form" id="myDataForm" onsubmit="return false;">
                   <div class="form-row">
                     <div class="form-field">
-                      <label>Имя</label>
-                      <input type="text" class="form-input" value="Никита" data-original="Никита">
+                      <label for="firstNameInput">Имя</label>
+                      <input type="text" id="firstNameInput" class="form-input" placeholder="Введите имя" data-original="">
                     </div>
                     <div class="form-field">
-                      <label>Фамилия</label>
-                      <input type="text" class="form-input" value="Синельников" data-original="Синельников">
+                      <label for="lastNameInput">Фамилия</label>
+                      <input type="text" id="lastNameInput" class="form-input" placeholder="Введите фамилию" data-original="">
                     </div>
                   </div>
                   <div class="form-row">
                     <div class="form-field">
-                      <label>Телефон</label>
-                      <input type="tel" class="form-input readonly" value="+79099090099" disabled data-original="+79099090099">
+                      <label for="phoneInput">Телефон</label>
+                      <input type="tel" id="phoneInput" class="form-input readonly" disabled data-original="">
                     </div>
                     <div class="form-field">
-                      <label>Email</label>
-                      <input type="email" class="form-input" value="agrailka666@gmail.com" data-original="agrailka666@gmail.com">
+                      <label for="emailInput">Email</label>
+                      <input type="email" id="emailInput" class="form-input" placeholder="Введите email" data-original="">
                     </div>
                   </div>
                   <div class="form-row">
                     <div class="form-field">
-                      <label>Дата рождения</label>
-                      <input type="date" class="form-input" value="2005-02-16" id="birthDate" data-original="2005-02-16" data-locked="true">
+                      <label for="birthDateInput">Дата рождения</label>
+                      <input type="date" id="birthDateInput" class="form-input" data-original="" data-locked="false">
                     </div>
                     <div class="form-field">
-                      <label>Пол</label>
-                      <select class="form-input" data-original="male">
-                        <option value="male" selected>Мужской</option>
+                      <label for="genderSelect">Пол</label>
+                      <select id="genderSelect" class="form-input" data-original="">
+                        <option value="">Не выбран</option>
+                        <option value="male">Мужской</option>
                         <option value="female">Женский</option>
                       </select>
                     </div>
                   </div>
-                  <p style="font-size: 12px; color: #9ca3af; margin-top: 4px;">Дата рождения устанавливается один раз и изменять ее нельзя</p>
+                  <p style="font-size: 12px; color: #9ca3af; margin-top: 4px;" id="birthDateHint">Дата рождения устанавливается один раз и изменять её нельзя</p>
                   <div class="form-actions">
                     <button type="button" class="btn-cancel" id="myDataCancel">Отменить</button>
-                    <button type="submit" class="btn-save" id="myDataSave">Сохранить</button>
+                    <button type="submit" class="btn-save" id="myDataSave">
+                      Сохранить
+                      <span class="loading-spinner"></span>
+                    </button>
                   </div>
                 </form>
               </div>
@@ -546,26 +570,29 @@
             <div class="card-body" id="legalBody">
               <div class="divider"></div>
               <div class="card-content-inner">
-                <form class="profile-form" id="legalForm">
+                <form class="profile-form" id="legalForm" onsubmit="return false;">
                   <div class="form-row single-col">
                     <div class="form-field">
-                      <label>Название организации*</label>
-                      <input type="text" class="form-input" placeholder="ООО Ромашка" data-original="">
+                      <label for="orgNameInput">Название организации*</label>
+                      <input type="text" id="orgNameInput" class="form-input" placeholder="ООО Ромашка" data-original="">
                     </div>
                   </div>
                   <div class="form-row">
                     <div class="form-field">
-                      <label>ИНН*</label>
-                      <input type="text" class="form-input" placeholder="0000000000" data-original="">
+                      <label for="innInput">ИНН*</label>
+                      <input type="text" id="innInput" class="form-input" placeholder="0000000000" data-original="">
                     </div>
                     <div class="form-field">
-                      <label>Email для выставления счета*</label>
-                      <input type="email" class="form-input" placeholder="email@corp.ru" data-original="">
+                      <label for="corpEmailInput">Email для выставления счета*</label>
+                      <input type="email" id="corpEmailInput" class="form-input" placeholder="email@corp.ru" data-original="">
                     </div>
                   </div>
                   <div class="form-actions">
                     <button type="button" class="btn-cancel" id="legalCancel">Отменить</button>
-                    <button type="submit" class="btn-save" id="legalSave">Сохранить</button>
+                    <button type="submit" class="btn-save" id="legalSave">
+                      Сохранить
+                      <span class="loading-spinner"></span>
+                    </button>
                   </div>
                 </form>
               </div>
@@ -579,6 +606,9 @@
 {% block extra_scripts %}
 <script>
   (function() {
+    // Глобальные переменные
+    let userData = null;
+
     // Функция сворачивания/разворачивания карточек
     function setupCardToggle(headerId, bodyId, arrowId) {
       const header = document.getElementById(headerId);
@@ -598,10 +628,94 @@
       });
     }
 
+    // Инициализация сворачивания карточек
     setupCardToggle('myDataHeader', 'myDataBody', 'myDataArrow');
     setupCardToggle('addressesHeader', 'addressesBody', 'addressesArrow');
     setupCardToggle('ordersHeader', 'ordersBody', 'ordersArrow');
     setupCardToggle('legalHeader', 'legalBody', 'legalArrow');
+
+    // Загрузка данных пользователя с сервера
+    async function loadUserData() {
+      try {
+        const response = await fetch('/api/v1/auth/me');
+        
+        if (!response.ok) {
+          // Если не авторизован - перенаправляем на логин
+          window.location.href = '/login';
+          return;
+        }
+        
+        userData = await response.json();
+        fillUserForm(userData);
+        
+      } catch (error) {
+        console.error('Ошибка загрузки данных:', error);
+        // При ошибке тоже перенаправляем на логин
+        window.location.href = '/login';
+      }
+    }
+
+    // Заполнение формы данными пользователя
+    function fillUserForm(data) {
+      // Имя
+      const firstNameInput = document.getElementById('firstNameInput');
+      if (firstNameInput) {
+        firstNameInput.value = data.first_name || '';
+        firstNameInput.setAttribute('data-original', data.first_name || '');
+      }
+      
+      // Фамилия
+      const lastNameInput = document.getElementById('lastNameInput');
+      if (lastNameInput) {
+        lastNameInput.value = data.last_name || '';
+        lastNameInput.setAttribute('data-original', data.last_name || '');
+      }
+      
+      // Телефон
+      const phoneInput = document.getElementById('phoneInput');
+      if (phoneInput) {
+        phoneInput.value = data.phone || '';
+        phoneInput.setAttribute('data-original', data.phone || '');
+      }
+      
+      // Email
+      const emailInput = document.getElementById('emailInput');
+      if (emailInput) {
+        emailInput.value = data.email || '';
+        emailInput.setAttribute('data-original', data.email || '');
+      }
+      
+      // Дата рождения
+      const birthDateInput = document.getElementById('birthDateInput');
+      if (birthDateInput) {
+        birthDateInput.value = data.birth_date || '';
+        birthDateInput.setAttribute('data-original', data.birth_date || '');
+        
+        // Если дата рождения уже установлена, блокируем поле
+        if (data.birth_date && data.birth_date_locked) {
+          birthDateInput.setAttribute('data-locked', 'true');
+          birthDateInput.disabled = true;
+          const hint = document.getElementById('birthDateHint');
+          if (hint) {
+            hint.textContent = 'Дата рождения уже установлена и не может быть изменена';
+            hint.style.color = '#9ca3af';
+          }
+        }
+      }
+      
+      // Пол
+      const genderSelect = document.getElementById('genderSelect');
+      if (genderSelect) {
+        genderSelect.value = data.gender || '';
+        genderSelect.setAttribute('data-original', data.gender || '');
+      }
+
+      // Сбрасываем состояние кнопок
+      const saveBtn = document.getElementById('myDataSave');
+      const cancelBtn = document.getElementById('myDataCancel');
+      if (saveBtn) saveBtn.classList.remove('active');
+      if (cancelBtn) cancelBtn.classList.remove('visible');
+    }
 
     // Функция отслеживания изменений в форме
     function setupFormTracking(formId, saveBtnId, cancelBtnId) {
@@ -611,7 +725,7 @@
       
       if (!form || !saveBtn || !cancelBtn) return;
 
-      const inputs = form.querySelectorAll('input[data-original], select[data-original]');
+      const inputs = form.querySelectorAll('input[data-original]:not([disabled]), select[data-original]');
       
       function checkChanges() {
         let hasChanges = false;
@@ -637,67 +751,197 @@
         input.addEventListener('change', checkChanges);
       });
 
+      // Отмена изменений
       cancelBtn.addEventListener('click', function() {
         inputs.forEach(input => {
           const original = input.getAttribute('data-original');
-          if (original) {
-            input.value = original;
-          } else {
-            input.value = '';
-          }
+          input.value = original || '';
         });
         saveBtn.classList.remove('active');
         cancelBtn.classList.remove('visible');
       });
 
-      saveBtn.addEventListener('click', function(e) {
+      // Сохранение данных
+      saveBtn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        
         if (!saveBtn.classList.contains('active')) {
-          e.preventDefault();
           return;
         }
-        
-        // Проверка даты рождения для формы "Мои данные"
-        if (formId === 'myDataForm') {
-          const birthDateInput = document.getElementById('birthDate');
-          if (birthDateInput && birthDateInput.getAttribute('data-locked') === 'true') {
-            if (birthDateInput.value !== birthDateInput.getAttribute('data-original')) {
-              e.preventDefault();
-              alert('Дату рождения можно установить только один раз. Изменение невозможно.');
-              birthDateInput.value = birthDateInput.getAttribute('data-original');
-              checkChanges();
+
+        // Блокируем кнопку и показываем спиннер
+        saveBtn.classList.add('saving');
+        saveBtn.disabled = true;
+
+        try {
+          // Собираем данные для отправки
+          const updateData = {};
+          
+          if (formId === 'myDataForm') {
+            // Проверка даты рождения
+            const birthDateInput = document.getElementById('birthDateInput');
+            if (birthDateInput && birthDateInput.getAttribute('data-locked') === 'true') {
+              if (birthDateInput.value !== birthDateInput.getAttribute('data-original')) {
+                alert('Дату рождения можно установить только один раз. Изменение невозможно.');
+                birthDateInput.value = birthDateInput.getAttribute('data-original');
+                saveBtn.classList.remove('saving');
+                saveBtn.disabled = false;
+                checkChanges();
+                return;
+              }
+            }
+
+            // Собираем поля для обновления профиля
+            const firstName = document.getElementById('firstNameInput').value.trim();
+            const lastName = document.getElementById('lastNameInput').value.trim();
+            const email = document.getElementById('emailInput').value.trim();
+            const birthDate = document.getElementById('birthDateInput').value;
+            const gender = document.getElementById('genderSelect').value;
+
+            if (firstName) updateData.first_name = firstName;
+            if (lastName) updateData.last_name = lastName;
+            if (email) updateData.email = email;
+            if (birthDate) updateData.birth_date = birthDate;
+            if (gender) updateData.gender = gender;
+
+          } else if (formId === 'legalForm') {
+            // Собираем поля для юр. лица
+            const orgName = document.getElementById('orgNameInput').value.trim();
+            const inn = document.getElementById('innInput').value.trim();
+            const corpEmail = document.getElementById('corpEmailInput').value.trim();
+
+            if (!orgName || !inn || !corpEmail) {
+              alert('Заполните все обязательные поля для юридического лица');
+              saveBtn.classList.remove('saving');
+              saveBtn.disabled = false;
               return;
             }
-          }
-        }
 
-        // Сохраняем изменения
-        inputs.forEach(input => {
-          input.setAttribute('data-original', input.value);
-        });
-        
-        // Блокируем дату рождения после сохранения
-        if (formId === 'myDataForm') {
-          const birthDateInput = document.getElementById('birthDate');
-          if (birthDateInput && birthDateInput.getAttribute('data-locked') === 'false') {
-            birthDateInput.setAttribute('data-locked', 'true');
-            birthDateInput.setAttribute('data-original', birthDateInput.value);
+            updateData.organization_name = orgName;
+            updateData.inn = inn;
+            updateData.corporate_email = corpEmail;
           }
+
+          // Отправляем запрос на сервер
+          const response = await fetch('/api/v1/auth/me', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updateData)
+          });
+
+          if (response.ok) {
+            const updatedUser = await response.json();
+            
+            // Обновляем оригинальные значения
+            inputs.forEach(input => {
+              input.setAttribute('data-original', input.value || '');
+            });
+
+            // Если это форма профиля, обновляем данные и проверяем блокировку даты рождения
+            if (formId === 'myDataForm') {
+              userData = updatedUser;
+              
+              const birthDateInput = document.getElementById('birthDateInput');
+              if (birthDateInput && updatedUser.birth_date_locked) {
+                birthDateInput.setAttribute('data-locked', 'true');
+                birthDateInput.disabled = true;
+                const hint = document.getElementById('birthDateHint');
+                if (hint) {
+                  hint.textContent = 'Дата рождения уже установлена и не может быть изменена';
+                }
+              }
+            }
+
+            saveBtn.classList.remove('active');
+            cancelBtn.classList.remove('visible');
+            
+            // Показываем уведомление об успехе
+            showNotification('Изменения сохранены!', 'success');
+          } else {
+            const error = await response.json();
+            showNotification(error.detail || 'Ошибка при сохранении', 'error');
+          }
+
+        } catch (error) {
+          console.error('Ошибка:', error);
+          showNotification('Произошла ошибка при сохранении', 'error');
+        } finally {
+          // Разблокируем кнопку и убираем спиннер
+          saveBtn.classList.remove('saving');
+          saveBtn.disabled = false;
         }
-        
-        saveBtn.classList.remove('active');
-        cancelBtn.classList.remove('visible');
-        
-        alert('Изменения сохранены!');
       });
     }
 
+    // Функция показа уведомлений
+    function showNotification(message, type = 'success') {
+      // Создаем элемент уведомления
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#10b981' : '#ef4444'};
+        color: white;
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-family: 'Gilroy', sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        z-index: 9999;
+        animation: slideIn 0.3s ease;
+        max-width: 400px;
+      `;
+      notification.textContent = message;
+      
+      document.body.appendChild(notification);
+      
+      // Удаляем через 3 секунды
+      setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+
+    // Добавляем стили для анимации уведомлений
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Инициализация отслеживания изменений
     setupFormTracking('myDataForm', 'myDataSave', 'myDataCancel');
     setupFormTracking('legalForm', 'legalSave', 'legalCancel');
 
     // Кнопка "Выйти"
-    document.getElementById('logoutBtn').addEventListener('click', function() {
+    document.getElementById('logoutBtn').addEventListener('click', async function() {
       if (confirm('Вы уверены, что хотите выйти?')) {
-        window.location.href = '/login';
+        try {
+          await fetch('/api/v1/auth/logout', { 
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+        } catch (error) {
+          console.error('Ошибка при выходе:', error);
+        }
+        // В любом случае перенаправляем на главную
+        window.location.href = '/';
       }
     });
 
@@ -708,14 +952,30 @@
 
     // Кнопка "Добавить адрес"
     document.getElementById('addAddressBtn').addEventListener('click', function() {
-      alert('Функция добавления адреса будет доступна в ближайшее время.');
+      showNotification('Функция добавления адреса будет доступна в ближайшее время.', 'info');
     });
 
-    // Инициализация блокировки даты рождения
-    const birthDateInput = document.getElementById('birthDate');
-    if (birthDateInput && birthDateInput.value) {
-      birthDateInput.setAttribute('data-locked', 'true');
+    // Инициализация блокировки даты рождения при загрузке
+    function initializeBirthDateLock() {
+      const birthDateInput = document.getElementById('birthDateInput');
+      if (birthDateInput && birthDateInput.value) {
+        // Если дата уже есть, проверяем статус блокировки из userData
+        if (userData && userData.birth_date_locked) {
+          birthDateInput.setAttribute('data-locked', 'true');
+          birthDateInput.disabled = true;
+          const hint = document.getElementById('birthDateHint');
+          if (hint) {
+            hint.textContent = 'Дата рождения уже установлена и не может быть изменена';
+          }
+        }
+      }
     }
+
+    // Загружаем данные при открытии страницы
+    loadUserData().then(() => {
+      initializeBirthDateLock();
+    });
+
   })();
 </script>
 {% endblock %}

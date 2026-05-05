@@ -474,21 +474,41 @@
     });
 
     // Функция обработки входа
-    function handleLogin(action) {
-      if (!isPhoneValid()) {
-        // Телефон не валиден - ничего не делаем
-        return false;
-      }
-      
-      if (!agreeCheck.checked) {
-        // Согласие не отмечено - показываем модальное окно
-        openLegalModal();
-        return false;
-      }
+    async function handleLogin(action) {
+        if (!isPhoneValid()) {
+            return false;
+        }
+        
+        if (!agreeCheck.checked) {
+            openLegalModal();
+            return false;
+        }
 
-      // Все условия соблюдены - переходим в личный кабинет
-      window.location.href = '/profile';
-      return true;
+        const phone = phoneInput.value.replace(/[^\d+]/g, '');
+        
+        try {
+            const response = await fetch('/api/v1/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ phone: phone })
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                // Перенаправляем в личный кабинет
+                window.location.href = '/profile';
+            } else {
+                const error = await response.json();
+                alert(error.detail || 'Ошибка при входе');
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Произошла ошибка при входе');
+        }
+        
+        return true;
     }
 
     // Обработчики кнопок

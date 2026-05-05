@@ -1,16 +1,23 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
+from starlette.middleware.sessions import SessionMiddleware
 
 from app.core.config import settings
+from app.api.v1.router import api_router
+from app.db.base import Base
+from app.db.session import engine
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Создаем таблицы при запуске (если их нет)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
     yield
 
 app = FastAPI(
@@ -22,6 +29,14 @@ app = FastAPI(
     redoc_url=None,
 )
 
+# Session middleware для хранения авторизации
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=settings.SECRET_KEY,
+    session_cookie="grilnica_session",
+    max_age=60 * 60 * 24 * 30,  # 30 дней
+)
+
 # CORS
 if settings.BACKEND_CORS_ORIGINS:
     app.add_middleware(
@@ -31,6 +46,9 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+# Подключаем API роутер
+app.include_router(api_router)
 
 # Пути
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -76,11 +94,17 @@ async def menu_combo_balls_foodattack(request: Request):
 
 @app.get("/login", response_class=HTMLResponse)
 async def login(request: Request):
+    # Если пользователь уже авторизован, перенаправляем в профиль
+    if request.session.get("user_id"):
+        return RedirectResponse(url="/profile")
     return templates.TemplateResponse(request, "login.html")
 
 
 @app.get("/profile", response_class=HTMLResponse)
 async def profile(request: Request):
+    # Проверяем авторизацию
+    if not request.session.get("user_id"):
+        return RedirectResponse(url="/login")
     return templates.TemplateResponse(request, "profile.html")
 
 
