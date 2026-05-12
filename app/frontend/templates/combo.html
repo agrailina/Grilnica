@@ -224,7 +224,7 @@
               <div class="product-name">${product.name}</div>
               <div class="product-description">${product.description || ''}</div>
               <div class="product-footer">
-                <span class="product-price">${product.price} ₽</span>
+                <span class="product-price">${Math.round(parseFloat(product.price))} ₽</span>
                 <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${product.id}', '${product.name.replace(/'/g, "\\'")}', ${product.price})">
                   В корзину
                 </button>

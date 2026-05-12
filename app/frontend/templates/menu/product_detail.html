@@ -352,7 +352,7 @@
                onerror="this.style.background='#f9fafb'">
           <div class="combo-card-info">
             <div class="combo-card-name">${name}</div>
-            <div class="combo-card-price">${price} ₽</div>
+            <div class="combo-card-price">${Math.round(parseFloat(product.price))} ₽</div>
           </div>
         </div>
 
@@ -365,7 +365,7 @@
             <button class="quantity-btn" id="incrementBtn">+</button>
           </div>
           <button class="add-to-cart-price-btn" id="addToCartBtn">
-            <span id="btnPrice">${price} ₽</span>
+            <span id="btnPrice">${Math.round(parseFloat(product.price))} ₽</span>
           </button>
         </div>
       </div>
@@ -377,7 +377,7 @@
 
     function updatePrice() {
       document.getElementById('quantityValue').textContent = quantity;
-      document.getElementById('btnPrice').textContent = (basePrice * quantity).toFixed(2) + ' ₽';
+      document.getElementById('btnPrice').textContent = Math.round(basePrice * quantity) + ' ₽';
     }
 
     document.getElementById('decrementBtn').addEventListener('click', () => {
@@ -389,7 +389,7 @@
     });
 
     document.getElementById('addToCartBtn').addEventListener('click', () => {
-      const total = (basePrice * quantity).toFixed(2);
+      const total = Math.round(basePrice * quantity);
       alert(`${name} (${quantity} шт.) добавлен в корзину за ${total} ₽`);
       
       if (typeof openCartPanel === 'function') {

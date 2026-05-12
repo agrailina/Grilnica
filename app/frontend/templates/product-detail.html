@@ -286,131 +286,131 @@
 
 {% block extra_scripts %}
 <script>
-(async function() {
-  const container = document.getElementById('productContainer');
-  
-  // Получаем slug или id из URL
-  const path = window.location.pathname;
-  const parts = path.split('/').filter(p => p);
-  const lastPart = parts[parts.length - 1];
-  
-  // Определяем тип параметра: UUID или slug
-  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(lastPart);
-  
-  // Выбираем правильный API
-  const apiUrl = isUuid 
-    ? `/api/v1/products/${lastPart}`
-    : `/api/v1/product-by-slug/${lastPart}`;
-
-  try {
-    const response = await fetch(apiUrl);
+  (async function() {
+    const container = document.getElementById('productContainer');
     
-    if (!response.ok) {
-      throw new Error('Товар не найден');
-    }
-
-    const product = await response.json();
+    // Получаем slug или id из URL
+    const path = window.location.pathname;
+    const parts = path.split('/').filter(p => p);
+    const lastPart = parts[parts.length - 1];
     
-    // Обновляем заголовок страницы
-    document.title = `Грильница • ${product.name}`;
+    // Определяем тип параметра: UUID или slug
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(lastPart);
     
-    // Данные товара
-    const categoryName = product.category?.name || 'Комбо';
-    const categorySlug = product.category?.slug || 'combo';
-    const price = parseFloat(product.price).toFixed(2);
-    const image = product.image || '/static/placeholder.png';
-    const name = product.name || 'Без названия';
-    const description = product.description || '';
+    // Выбираем правильный API
+    const apiUrl = isUuid 
+      ? `/api/v1/products/${lastPart}`
+      : `/api/v1/product-by-slug/${lastPart}`;
 
-    // Рендерим страницу с реальными данными
-    container.innerHTML = `
-      <div class="product-image-wrapper">
-        <img src="${image}" 
-             alt="${name}" 
-             class="product-detail-image" 
-             onerror="this.src='/static/placeholder.png'">
-      </div>
-
-      <div class="product-info">
-        <div class="back-row">
-          <a href="/menu/${categorySlug}" class="back-button" aria-label="Назад">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-          </a>
-          <a href="/menu/${categorySlug}" class="back-label">← ${categoryName}</a>
-        </div>
-
-        <h1 class="product-detail-name">${name}</h1>
-        <p class="product-detail-description">${description}</p>
-        <p class="product-combo-label">Комбо "${name}"</p>
-
-        <div class="combo-card">
-          <img src="${image}" 
-               alt="${name}" 
-               class="combo-mini-image" 
-               onerror="this.style.background='#f9fafb'">
-          <div class="combo-card-info">
-            <div class="combo-card-name">${name}</div>
-            <div class="combo-card-price">${price} ₽</div>
-          </div>
-        </div>
-
-        <div class="divider-line"></div>
-
-        <div class="quantity-row">
-          <div class="quantity-control">
-            <button class="quantity-btn" id="decrementBtn">−</button>
-            <span class="quantity-value" id="quantityValue">1</span>
-            <button class="quantity-btn" id="incrementBtn">+</button>
-          </div>
-          <button class="add-to-cart-price-btn" id="addToCartBtn">
-            <span id="btnPrice">${price} ₽</span>
-          </button>
-        </div>
-      </div>
-    `;
-
-    // Логика количества
-    let quantity = 1;
-    const basePrice = parseFloat(product.price);
-
-    function updatePrice() {
-      document.getElementById('quantityValue').textContent = quantity;
-      document.getElementById('btnPrice').textContent = (basePrice * quantity).toFixed(2) + ' ₽';
-    }
-
-    document.getElementById('decrementBtn').addEventListener('click', () => {
-      if (quantity > 1) { quantity--; updatePrice(); }
-    });
-
-    document.getElementById('incrementBtn').addEventListener('click', () => {
-      if (quantity < 99) { quantity++; updatePrice(); }
-    });
-
-    document.getElementById('addToCartBtn').addEventListener('click', () => {
-      const total = (basePrice * quantity).toFixed(2);
-      alert(`${name} (${quantity} шт.) добавлен в корзину за ${total} ₽`);
+    try {
+      const response = await fetch(apiUrl);
       
-      if (typeof openCartPanel === 'function') {
-        openCartPanel();
+      if (!response.ok) {
+        throw new Error('Товар не найден');
       }
-    });
 
-    // Активируем категорию в навигации
-    if (typeof window.setActiveCategory === 'function') {
-      window.setActiveCategory(categorySlug);
+      const product = await response.json();
+      
+      // Обновляем заголовок страницы
+      document.title = `Грильница • ${product.name}`;
+      
+      // Данные товара
+      const categoryName = product.category?.name || 'Комбо';
+      const categorySlug = product.category?.slug || 'combo';
+      const price = Math.round(parseFloat(product.price));
+      const image = product.image || '/static/placeholder.png';
+      const name = product.name || 'Без названия';
+      const description = product.description || '';
+
+      // Рендерим страницу с реальными данными
+      container.innerHTML = `
+        <div class="product-image-wrapper">
+          <img src="${image}" 
+              alt="${name}" 
+              class="product-detail-image" 
+              onerror="this.src='/static/placeholder.png'">
+        </div>
+
+        <div class="product-info">
+          <div class="back-row">
+            <a href="/menu/${categorySlug}" class="back-button" aria-label="Назад">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+            </a>
+            <a href="/menu/${categorySlug}" class="back-label">${categoryName}</a>
+          </div>
+
+          <h1 class="product-detail-name">${name}</h1>
+          <p class="product-detail-description">${description}</p>
+          <p class="product-combo-label">Комбо "${name}"</p>
+
+          <div class="combo-card">
+            <img src="${image}" 
+                alt="${name}" 
+                class="combo-mini-image" 
+                onerror="this.style.background='#f9fafb'">
+            <div class="combo-card-info">
+              <div class="combo-card-name">${name}</div>
+              <div class="combo-card-price">${price} ₽</div>
+            </div>
+          </div>
+
+          <div class="divider-line"></div>
+
+          <div class="quantity-row">
+            <div class="quantity-control">
+              <button class="quantity-btn" id="decrementBtn">−</button>
+              <span class="quantity-value" id="quantityValue">1</span>
+              <button class="quantity-btn" id="incrementBtn">+</button>
+            </div>
+            <button class="add-to-cart-price-btn" id="addToCartBtn">
+              <span id="btnPrice">${price} ₽</span>
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Логика количества
+      let quantity = 1;
+      const basePrice = parseFloat(product.price);
+
+      function updatePrice() {
+        document.getElementById('quantityValue').textContent = quantity;
+        document.getElementById('btnPrice').textContent = Math.round(basePrice * quantity) + ' ₽';
+      }
+
+      document.getElementById('decrementBtn').addEventListener('click', () => {
+        if (quantity > 1) { quantity--; updatePrice(); }
+      });
+
+      document.getElementById('incrementBtn').addEventListener('click', () => {
+        if (quantity < 99) { quantity++; updatePrice(); }
+      });
+
+      document.getElementById('addToCartBtn').addEventListener('click', () => {
+        const total = Math.round(basePrice * quantity);
+        alert(`${name} (${quantity} шт.) добавлен в корзину за ${total} ₽`);
+        
+        if (typeof openCartPanel === 'function') {
+          openCartPanel();
+        }
+      });
+
+      // Активируем категорию в навигации
+      if (typeof window.setActiveCategory === 'function') {
+        window.setActiveCategory(categorySlug);
+      }
+
+    } catch (error) {
+      console.error('Ошибка:', error);
+      container.innerHTML = `
+        <div class="error-state">
+          <h3>${error.message}</h3>
+          <p>Товар не найден или произошла ошибка загрузки</p>
+          <a href="/menu/combo">← Вернуться в Комбо</a>
+        </div>`;
     }
-
-  } catch (error) {
-    console.error('Ошибка:', error);
-    container.innerHTML = `
-      <div class="error-state">
-        <h3>${error.message}</h3>
-        <p>Товар не найден или произошла ошибка загрузки</p>
-        <a href="/menu/combo">Вернуться в Комбо</a>
-      </div>`;
-  }
-})();
+  })();
 </script>
 {% endblock %}

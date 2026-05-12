@@ -191,7 +191,7 @@
                 <div class="product-name">{{ product.name }}</div>
                 <div class="product-description">{{ product.description or '' }}</div>
                 <div class="product-footer">
-                    <span class="product-price">{{ product.price }} ₽</span>
+                    <span class="product-price">{{ "%.0f"|format(product.price|float) }} ₽</span>
                     <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('{{ product.id }}', '{{ product.name }}', '{{ product.price }}')">
                         В корзину
                     </button>
